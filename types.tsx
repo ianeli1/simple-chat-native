@@ -4,8 +4,9 @@ export type RootStackParamList = {
 };
 
 export type BottomTabParamList = {
-  TabOne: undefined;
-  TabTwo: undefined;
+  Settings: undefined;
+  Chat: undefined;
+  Landing: undefined;
 };
 
 export type TabOneParamList = {
@@ -15,3 +16,11 @@ export type TabOneParamList = {
 export type TabTwoParamList = {
   TabTwoScreen: undefined;
 };
+
+declare global {
+  interface ASElement {
+    key: string;
+    name: string;
+    icon?: string;
+  }
+}
