@@ -46,11 +46,11 @@ export function Avatar(props: AvatarProps) {
     : styles.root;
 
   return props.onPress ? (
-    <View style={style}>{content}</View>
-  ) : (
     <TouchableOpacity onPress={props.onPress} style={style}>
       {content}
     </TouchableOpacity>
+  ) : (
+    <View style={style}>{content}</View>
   );
 }
 
