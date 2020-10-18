@@ -23,4 +23,25 @@ declare global {
     name: string;
     icon?: string;
   }
+
+  interface Invite {
+    id: string;
+    name: string;
+    icon?: string;
+  }
+
+  interface Message {
+    id: number;
+    name: string;
+    userId: string;
+    message: string;
+    image?: string;
+    timestamp: Date;
+    emotes?: Emotes;
+    invite?: Invite;
+  }
+
+  interface Emotes {
+    [key: string]: string;
+  }
 }

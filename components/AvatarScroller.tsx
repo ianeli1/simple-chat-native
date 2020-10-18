@@ -7,11 +7,12 @@ interface AvatarScrollerProps {
   size?: number;
   elements: ASElement[];
   onElementClick?: (key: string) => void;
+  vertical?: boolean;
 }
 
 export function AvatarScroller(props: AvatarScrollerProps) {
   return (
-    <ScrollView style={styles.root} horizontal>
+    <ScrollView style={styles.root} horizontal={!props.vertical}>
       {props.elements.map(({ key, name, icon }, i) => (
         <TouchableOpacity
           onPress={
@@ -34,9 +35,7 @@ export function AvatarScroller(props: AvatarScrollerProps) {
 const styles = StyleSheet.create({
   root: {
     display: "flex",
-    flexDirection: "row",
     overflow: "hidden",
-    maxHeight: 72,
   },
   element: {
     margin: 4,
