@@ -7,9 +7,13 @@ import { View, ScrollView, StyleSheet } from "react-native";
 import { AvatarNameCombo } from "../components/AvatarNameCombo";
 import { List } from "react-native-paper";
 import { Avatar } from "../components/Avatar";
+import { Home } from "../components/Settings/Home";
+import { Profile } from "../components/Settings/Profile";
 
-type StackList = {
+export type StackList = {
   Home: undefined;
+  Profile: undefined;
+  Server: { serverId: string };
 };
 
 const Stack = createStackNavigator<StackList>();
@@ -22,61 +26,7 @@ export function Settings() {
         component={Home}
         options={{ title: "Settings" }}
       />
+      <Stack.Screen name="Profile" component={Profile} />
     </Stack.Navigator>
   );
 }
-
-function Home({
-  navigation,
-}: {
-  navigation: StackNavigationProp<StackList, "Home">;
-}) {
-  const [expand, setExpand] = useState(true);
-  const dummy = () => null;
-  return (
-    <ScrollView contentContainerStyle={styles.root}>
-      <AvatarNameCombo
-        title="Example"
-        subtitle="Test2"
-        onAvatarClick={() => null}
-        size={128}
-      />
-      <View style={styles.list}>
-        <List.Item
-          title="Profile"
-          description="User information, friends, servers..."
-          left={(props) => <List.Icon {...props} icon="account" />}
-        />
-        <List.Section title="Servers">
-          <List.Accordion
-            title="Your servers"
-            left={(props) => <List.Icon {...props} icon="forum-outline" />}
-            expanded={expand}
-            onPress={() => setExpand((expand) => !expand)}
-          >
-            <List.Item
-              onPress={dummy}
-              title="test1"
-              left={(props) => <Avatar label="te" />}
-            />
-            <List.Item
-              onPress={dummy}
-              title="test2"
-              left={(props) => <Avatar label="te" />}
-            />
-          </List.Accordion>
-        </List.Section>
-      </View>
-    </ScrollView>
-  );
-}
-
-const styles = StyleSheet.create({
-  root: {
-    display: "flex",
-    alignItems: "center",
-  },
-  list: {
-    width: "100%",
-  },
-});
