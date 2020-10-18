@@ -24,7 +24,7 @@ export function Message(props: MessageProps) {
       onLongPress={props.onLongPress}
     >
       <View style={styles.message}>
-        <Avatar label={message.name} />
+        <Avatar label={message.name} size={48} />
         <View style={styles.inner}>
           <Text style={styles.author}>{message.name}</Text>
           <View style={styles.content}>
@@ -46,15 +46,14 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     flexGrow: 1,
+    alignItems: "center",
   },
   inner: {
-    margin: 4,
     marginLeft: 8,
     padding: 4,
     borderRadius: 8,
-    backgroundColor: "#5f9ea0",
+    backgroundColor: "#000",
     minWidth: 100,
-    minHeight: 56,
     flexShrink: 1,
   },
   content: {
@@ -63,7 +62,7 @@ const styles = StyleSheet.create({
   author: {
     fontSize: 25,
     lineHeight: 25,
-    color: "#000",
+    color: "#0FF",
   },
   textContent: {
     color: "#FFF",
