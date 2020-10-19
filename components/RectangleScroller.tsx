@@ -1,15 +1,18 @@
 import React from "react";
 import { View, Text, ScrollView, StyleSheet } from "react-native";
+import { TouchableHighlight } from "react-native-gesture-handler";
 import { IconButton } from "react-native-paper";
 import { Avatar } from "./Avatar";
 
 interface RectangleScrollerProps {
   elements: ASElement[];
   showIcon?: boolean;
+  onPress?: (key: string) => void;
   onPositive?: (key: string) => void;
   onNegative?: (key: string) => void;
 }
 
+//TODO: add a way to mark element as disabled
 export function RectangleScroller(props: RectangleScrollerProps) {
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -25,6 +28,7 @@ export function RectangleScroller(props: RectangleScrollerProps) {
           onNegative={
             props.onNegative ? () => props.onNegative!(key) : undefined
           }
+          onPress={props.onPress ? () => props.onPress!(key) : undefined}
         />
       ))}
     </ScrollView>
@@ -38,9 +42,16 @@ interface RectangleProps {
   icon?: string;
   onPositive?: () => void;
   onNegative?: () => void;
+  onPress?: () => void;
 }
 
 function Rectangle(props: RectangleProps) {
+  const content = (
+    <>
+      <Text style={styles.title}>{props.title}</Text>
+      {props.subtitle && <Text style={styles.subtitle}>{props.subtitle}</Text>}
+    </>
+  );
   return (
     <View style={styles.rectangle}>
       {props.showIcon && (
@@ -48,12 +59,17 @@ function Rectangle(props: RectangleProps) {
           <Avatar label={props.title} icon={props.icon} size={48} />
         </View>
       )}
-      <View style={styles.rectangleText}>
-        <Text style={styles.title}>{props.title}</Text>
-        {props.subtitle && (
-          <Text style={styles.subtitle}>{props.subtitle}</Text>
-        )}
-      </View>
+      {props.onPress ? (
+        <TouchableHighlight
+          containerStyle={styles.rectangleText}
+          onPress={props.onPress}
+        >
+          {content}
+        </TouchableHighlight>
+      ) : (
+        <View style={styles.rectangleText}>{content}</View>
+      )}
+
       {props.onPositive && (
         <IconButton icon="plus" size={48} onPress={props.onPositive} />
       )}

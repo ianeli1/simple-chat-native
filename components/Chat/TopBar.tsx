@@ -1,17 +1,18 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { IconButton } from "react-native-paper";
+import { channelContext } from "../Providers/ChannelProvider";
 
 interface TopBarProps {
   onMenu: () => void;
-  title: string;
 }
 
 export function TopBar(props: TopBarProps) {
+  const { currentChannel } = useContext(channelContext);
   return (
     <View style={styles.root}>
       <IconButton icon="menu" onPress={props.onMenu} size={32} />
-      <Text style={styles.title}>{props.title}</Text>
+      <Text style={styles.title}>{currentChannel}</Text>
     </View>
   );
 }

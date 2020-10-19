@@ -52,7 +52,6 @@ export function Chat() {
     edgeWidth: 2000,
   };
   let drawer: DrawerLayout | null;
-  const {} = useContext(channelContext);
   return (
     <View style={styles.root}>
       <DrawerLayout
@@ -64,8 +63,10 @@ export function Chat() {
         }}
       >
         <View style={styles.test}>
-          <TopBar onMenu={() => drawer?.openDrawer()} title="epic channel" />
-          <MessageList messages={dummyMessages} />
+          <TopBar onMenu={() => drawer?.openDrawer()} />
+          <View style={styles.chatbox}>
+            <MessageList />
+          </View>
           <NewMessageBox />
         </View>
       </DrawerLayout>
@@ -79,8 +80,6 @@ const styles = StyleSheet.create({
     display: "flex",
   },
   background: {
-    zIndex: 1,
-    flex: 1,
     position: "absolute",
   },
   test: {
@@ -88,5 +87,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#222",
     flexGrow: 1,
     display: "flex",
+    paddingBottom: 128,
+  },
+  chatbox: {
+    flexGrow: 1,
+    flexShrink: 1,
   },
 });

@@ -4,6 +4,7 @@ import { View, Text, StyleSheet, StatusBar } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import { TouchableRipple, Title } from "react-native-paper";
 import { AvatarScroller } from "../AvatarScroller";
+import { channelContext } from "../Providers/ChannelProvider";
 import { serverContext } from "../Providers/ServerProvider";
 import { userContext } from "../Providers/UserProvider";
 import { RectangleScroller } from "../RectangleScroller";
@@ -13,6 +14,7 @@ export function Sidebar() {
   const { setCurrentServer, currentServer, serverData } = useContext(
     serverContext
   );
+  const { setCurrentChannel, currentChannel } = useContext(channelContext);
   return (
     <View style={styles.root}>
       <ScrollView style={styles.serverList}>
@@ -46,6 +48,7 @@ export function Sidebar() {
               (channel) => ({ key: channel, name: channel } as ASElement)
             ) || []
           }
+          onPress={(key) => setCurrentChannel(key)}
         />
       </ScrollView>
     </View>
