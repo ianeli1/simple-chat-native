@@ -13,6 +13,8 @@ import TabTwoScreen from "../screens/TabTwoScreen";
 import { BottomTabParamList, TabOneParamList, TabTwoParamList } from "../types";
 import { Settings } from "../screens/Settings";
 import { Chat } from "../screens/Chat";
+import ServerProvider from "../components/Providers/ServerProvider";
+import { ChannelProvider } from "../components/Providers/ChannelProvider";
 
 const BottomTab = createMaterialBottomTabNavigator<BottomTabParamList>();
 export default function BottomTabNavigator() {
@@ -34,7 +36,13 @@ export default function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="Chat"
-        component={Chat}
+        children={() => (
+          <ServerProvider>
+            <ChannelProvider>
+              <Chat />
+            </ChannelProvider>
+          </ServerProvider>
+        )}
         options={{
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="message" color={color} />

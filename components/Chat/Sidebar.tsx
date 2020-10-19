@@ -1,50 +1,36 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import React from "react";
+import React, { useContext } from "react";
 import { View, Text, StyleSheet, StatusBar } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import { TouchableRipple, Title } from "react-native-paper";
 import { AvatarScroller } from "../AvatarScroller";
+import { serverContext } from "../Providers/ServerProvider";
+import { userContext } from "../Providers/UserProvider";
 import { RectangleScroller } from "../RectangleScroller";
 
 export function Sidebar() {
+  const { user } = useContext(userContext);
+  const { setCurrentServer, currentServer, serverData } = useContext(
+    serverContext
+  );
   return (
     <View style={styles.root}>
       <ScrollView style={styles.serverList}>
         <AvatarScroller
           vertical
-          elements={[
-            { key: "1", name: "pp" },
-            { key: "1", name: "pp" },
-            { key: "1", name: "pp" },
-            { key: "1", name: "pp" },
-            { key: "1", name: "pp" },
-            { key: "1", name: "pp" },
-            { key: "1", name: "pp" },
-            { key: "1", name: "pp" },
-            { key: "1", name: "pp" },
-            { key: "1", name: "pp" },
-            { key: "1", name: "pp" },
-            { key: "1", name: "pp" },
-            { key: "1", name: "pp" },
-            { key: "1", name: "pp" },
-            { key: "1", name: "pp" },
-            { key: "1", name: "pp" },
-            { key: "1", name: "pp" },
-            { key: "1", name: "pp" },
-            { key: "1", name: "pp" },
-            { key: "1", name: "pp" },
-            { key: "1", name: "pp" },
-            { key: "1", name: "pp" },
-            { key: "1", name: "pp" },
-            { key: "1", name: "pp" },
-          ]}
+          elements={
+            (user || null)?.servers?.map(
+              (serverId, i) => ({ key: serverId, name: serverId } as ASElement)
+            ) || []
+          }
+          onElementClick={(serverId) => setCurrentServer(serverId)}
         />
       </ScrollView>
       <ScrollView>
         <TouchableRipple style={styles.titleBtn} onPress={() => null}>
           <View style={styles.title}>
             <Title style={{ flexShrink: 1, flexGrow: 1, lineHeight: 20 }}>
-              Current server name
+              {currentServer}
             </Title>
             <MaterialCommunityIcons
               name="dots-vertical"
@@ -55,16 +41,11 @@ export function Sidebar() {
           </View>
         </TouchableRipple>
         <RectangleScroller
-          elements={[
-            { key: "1", name: "pp" },
-            { key: "1", name: "pp" },
-            { key: "1", name: "pp" },
-            { key: "1", name: "pp" },
-            { key: "1", name: "pp" },
-            { key: "1", name: "pp" },
-            { key: "1", name: "pp" },
-            { key: "1", name: "pp" },
-          ]}
+          elements={
+            serverData?.channels.map(
+              (channel) => ({ key: channel, name: channel } as ASElement)
+            ) || []
+          }
         />
       </ScrollView>
     </View>
