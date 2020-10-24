@@ -1,0 +1,9 @@
+mutation CreateChannel($name: String!, $id: Float!) {
+  createChannel(name: $name, serverId: $id) {
+    id
+    name
+    owner {
+      id
+    }
+  }
+}

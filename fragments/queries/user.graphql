@@ -1,0 +1,76 @@
+query Me {
+  me {
+    id
+    name
+    createdAt
+    servers {
+      id
+      name
+    }
+    friendRequests {
+      id
+      name
+    }
+    friends {
+      id
+      name
+    }
+  }
+}
+
+query User($id: String!) {
+  user(id: $id) {
+    id
+    name
+    birthday
+  }
+}
+
+query MyServers {
+  myServers {
+    id
+    name
+    channels {
+      id
+      name
+      updatedAt
+    }
+    emotes {
+      id
+      name
+      image
+      owner {
+        id
+        name
+      }
+    }
+    updatedAt
+  }
+}
+
+query Login($token: String!) {
+  login(token: $token) {
+    id
+    name
+    servers {
+      id
+      name
+    }
+    friends {
+      id
+      name
+    }
+    friendRequests {
+      id
+      name
+    }
+  }
+}
+
+query myEmotes {
+  myEmotes {
+    id
+    name
+    image
+  }
+}

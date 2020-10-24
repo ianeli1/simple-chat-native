@@ -1,0 +1,39 @@
+mutation UseInvite($id: Float!) {
+  useInvite(inviteId: $id) {
+    id
+    name
+    channels {
+      id
+      name
+    }
+  }
+}
+
+mutation CreateInvite($id: Float!, $expire: DateTime) {
+  createInvite(serverId: $id, expire: $expire) {
+    id
+    expire
+    author {
+      id
+    }
+    owner {
+      id
+      name
+    }
+  }
+}
+
+mutation CreateServer($name: String!) {
+  createServer(name: $name) {
+    id
+    name
+  }
+}
+
+mutation LeaveServer($id: Float!) {
+  leaveServer(serverId: $id) {
+    servers {
+      id
+    }
+  }
+}
