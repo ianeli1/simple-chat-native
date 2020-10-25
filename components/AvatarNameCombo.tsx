@@ -42,6 +42,9 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    width: "100%",
+    padding: "1%",
+    justifyContent: "center",
   },
   box: {
     borderLeftColor: "#E0E0E0",
@@ -51,11 +54,11 @@ const styles = StyleSheet.create({
     display: "flex",
   },
   title: {
-    fontSize: 60,
+    fontSize: 40,
     color: "#FFF",
   },
   subtitle: {
-    fontSize: 30,
+    fontSize: 20,
     color: "#FFF",
   },
 });
