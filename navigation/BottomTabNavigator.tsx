@@ -38,9 +38,7 @@ export default function BottomTabNavigator() {
         name="Chat"
         children={() => (
           <ServerProvider>
-            <ChannelProvider>
-              <Chat />
-            </ChannelProvider>
+            <Chat />
           </ServerProvider>
         )}
         options={{

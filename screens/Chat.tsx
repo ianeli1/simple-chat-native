@@ -5,6 +5,7 @@ import { MessageList } from "../components/Chat/MessageList";
 import { NewMessageBox } from "../components/Chat/NewMessageBox";
 import { Sidebar } from "../components/Chat/Sidebar";
 import { TopBar } from "../components/Chat/TopBar";
+import { ChannelProvider } from "../components/Providers/ChannelProvider";
 
 export function Chat() {
   const drawerProps = {
@@ -16,22 +17,24 @@ export function Chat() {
   let drawer: DrawerLayout | null;
   return (
     <View style={styles.root}>
-      <DrawerLayout
-        {...drawerProps}
-        drawerPosition="left"
-        renderNavigationView={() => <Sidebar />}
-        ref={(d) => {
-          drawer = d;
-        }}
-      >
-        <View style={styles.test}>
-          <TopBar onMenu={() => drawer?.openDrawer()} />
-          <View style={styles.chatbox}>
-            <MessageList />
+      <ChannelProvider>
+        <DrawerLayout
+          {...drawerProps}
+          drawerPosition="left"
+          renderNavigationView={() => <Sidebar />}
+          ref={(d) => {
+            drawer = d;
+          }}
+        >
+          <View style={styles.test}>
+            <TopBar onMenu={() => drawer?.openDrawer()} />
+            <View style={styles.chatbox}>
+              <MessageList />
+            </View>
+            <NewMessageBox />
           </View>
-          <NewMessageBox />
-        </View>
-      </DrawerLayout>
+        </DrawerLayout>
+      </ChannelProvider>
     </View>
   );
 }
