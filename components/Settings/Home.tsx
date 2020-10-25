@@ -1,11 +1,13 @@
 import { StackNavigationProp } from "@react-navigation/stack";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { List } from "react-native-paper";
 import { AvatarNameCombo } from "../AvatarNameCombo";
 import { StackList } from "../../screens/Settings";
 import { Avatar } from "../Avatar";
+import { userContext } from "../Providers/UserProvider";
+import { Loading } from "../Loading";
 
 export function Home({
   navigation,
@@ -13,14 +15,15 @@ export function Home({
   navigation: StackNavigationProp<StackList, "Home">;
 }) {
   const [expand, setExpand] = useState(true);
-  const dummy = () => null;
-  return (
+  const { user, loading } = useContext(userContext);
+  return loading ? (
+    <Loading />
+  ) : (
     <ScrollView contentContainerStyle={styles.root}>
       <AvatarNameCombo
-        title="Example"
-        subtitle="Test2"
+        title={user!.name}
+        subtitle={user!.id}
         onAvatarClick={() => null}
-        size={128}
       />
       <View style={styles.list}>
         <List.Item
@@ -36,18 +39,13 @@ export function Home({
             expanded={expand}
             onPress={() => setExpand((expand) => !expand)}
           >
-            <List.Item
-              onPress={() => navigation.navigate("Server", { serverId: "idk" })}
-              title="test1"
-              left={(props) => <Avatar label="te" />}
-            />
-            <List.Item
-              onPress={() =>
-                navigation.navigate("Server", { serverId: "idk2" })
-              }
-              title="test2"
-              left={(props) => <Avatar label="te" />}
-            />
+            {user?.servers.map(({ id, name }) => (
+              <List.Item
+                onPress={() => navigation.navigate("Server", { serverId: id })}
+                title={name}
+                left={() => <Avatar label={name} />}
+              />
+            ))}
           </List.Accordion>
         </List.Section>
       </View>
@@ -59,6 +57,7 @@ const styles = StyleSheet.create({
   root: {
     display: "flex",
     alignItems: "center",
+    overflow: "hidden",
   },
   list: {
     width: "100%",

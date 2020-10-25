@@ -1,19 +1,13 @@
-import {
-  createStackNavigator,
-  StackNavigationProp,
-} from "@react-navigation/stack";
-import React, { useState } from "react";
-import { View, ScrollView, StyleSheet } from "react-native";
-import { AvatarNameCombo } from "../components/AvatarNameCombo";
-import { List } from "react-native-paper";
-import { Avatar } from "../components/Avatar";
+import { createStackNavigator } from "@react-navigation/stack";
+import React from "react";
 import { Home } from "../components/Settings/Home";
 import { Profile } from "../components/Settings/Profile";
+import Server from "../components/Settings/Server";
 
 export type StackList = {
   Home: undefined;
   Profile: undefined;
-  Server: { serverId: string };
+  Server: { serverId: number };
 };
 
 const Stack = createStackNavigator<StackList>();
@@ -27,6 +21,7 @@ export function Settings() {
         options={{ title: "Settings" }}
       />
       <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen name="Server" component={Server} />
     </Stack.Navigator>
   );
 }
