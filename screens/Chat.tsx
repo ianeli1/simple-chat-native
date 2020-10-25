@@ -1,48 +1,10 @@
-import React, { useContext } from "react";
+import React from "react";
 import { View, StyleSheet, StatusBar } from "react-native";
 import DrawerLayout from "react-native-gesture-handler/DrawerLayout";
 import { MessageList } from "../components/Chat/MessageList";
 import { NewMessageBox } from "../components/Chat/NewMessageBox";
 import { Sidebar } from "../components/Chat/Sidebar";
 import { TopBar } from "../components/Chat/TopBar";
-import {
-  channelContext,
-  ChannelProvider,
-} from "../components/Providers/ChannelProvider";
-import ServerProvider, {
-  serverContext,
-} from "../components/Providers/ServerProvider";
-
-const dummyMessages: Message[] = [
-  {
-    id: 1,
-    message: "test1",
-    name: "longusernamehahaitneverends",
-    timestamp: new Date(),
-    userId: "1",
-  },
-  {
-    id: 2,
-    message: "test1",
-    name: "user1",
-    timestamp: new Date(),
-    userId: "1",
-  },
-  {
-    id: 3,
-    message: "longtexthahaomgdoesiteverendfuckthedeveloperlmao",
-    name: "user1",
-    timestamp: new Date(),
-    userId: "1",
-  },
-  {
-    id: 4,
-    message: "test1",
-    name: "user1",
-    timestamp: new Date(),
-    userId: "1",
-  },
-];
 
 export function Chat() {
   const drawerProps = {

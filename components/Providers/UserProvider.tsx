@@ -1,12 +1,22 @@
 import React, { createContext } from "react";
-import { useUser } from "../../dataHandler/hooks";
+import { useMeQuery, MeQuery } from "../../generated/graphql";
 
-export const userContext = createContext<ReturnType<typeof useUser>>(
-  undefined!
-);
+export const userContext = createContext<{
+  user: Exclude<MeQuery["me"], undefined> | null;
+  loading: boolean;
+}>(undefined!);
 
+//TODO: Use User subscription
 export function UserProvider({ children }: { children: React.ReactNode }) {
-  const user = useUser();
-
-  return <userContext.Provider value={user}>{children}</userContext.Provider>;
+  const queryResult = useMeQuery();
+  return (
+    <userContext.Provider
+      value={{
+        user: queryResult.data?.me ?? null,
+        loading: queryResult.loading,
+      }}
+    >
+      {children}
+    </userContext.Provider>
+  );
 }

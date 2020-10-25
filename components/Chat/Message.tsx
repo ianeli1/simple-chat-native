@@ -1,11 +1,11 @@
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { TouchableHighlight } from "react-native-gesture-handler";
-import { Subheading } from "react-native-paper";
 import { Avatar } from "../Avatar";
+import { GetChannelQuery } from "../../generated/graphql";
 
 interface MessageProps {
-  message: Message;
+  message: NonNullable<GetChannelQuery["channel"]>["messages"][0];
   onLongPress?: () => void;
   onPress?: () => void;
 }
@@ -16,6 +16,7 @@ interface MessageProps {
  */
 export function Message(props: MessageProps) {
   const { message } = props;
+  const { author } = message;
   return (
     <TouchableHighlight
       containerStyle={styles.root}
@@ -24,11 +25,11 @@ export function Message(props: MessageProps) {
       onLongPress={props.onLongPress}
     >
       <View style={styles.message}>
-        <Avatar label={message.name} size={48} />
+        <Avatar label={author.name} size={48} />
         <View style={styles.inner}>
-          <Text style={styles.author}>{message.name}</Text>
+          <Text style={styles.author}>{author.name}</Text>
           <View style={styles.content}>
-            <Text style={styles.textContent}>{message.message}</Text>
+            <Text style={styles.textContent}>{message.content}</Text>
           </View>
         </View>
       </View>

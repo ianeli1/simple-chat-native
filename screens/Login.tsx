@@ -3,10 +3,9 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import { Widget } from "../components/Widget";
-import { useUser } from "../dataHandler/hooks";
-import { signIn } from "../dataHandler/miscFunctions";
+import { useLoginLazyQuery } from "../generated/graphql";
 import { RootStackParamList } from "../types";
-
+import { signIn } from "../firebaseFunctions";
 export function Login({
   navigation,
 }: {
@@ -15,9 +14,8 @@ export function Login({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<"email" | "password" | null>(null);
-  const [loading, setLoading] = useState(false);
-  const { user } = useUser();
-  if (user) {
+  const [login, { data, loading }] = useLoginLazyQuery();
+  if (!loading && data) {
     navigation.navigate("Root");
   }
   return (
@@ -45,16 +43,27 @@ export function Login({
             <Button
               disabled={loading}
               onPress={async () => {
-                setLoading(true);
                 signIn(email, password)
-                  .then(() => {
-                    setLoading(false);
-                    setError(null);
-                    navigation.navigate("Root");
+                  .then((token) => {
+                    if (token) {
+                      login({ variables: { token } });
+                    }
                   })
                   .catch((e) => {
                     if (typeof e === "string") {
                       setError(e as "email" | "password");
+                      switch (e) {
+                        case "invalid-email":
+                        case "user-not-found":
+                          setError("email");
+                          break;
+                        case "wrong-password":
+                          setError("password");
+                          break;
+                        default:
+                          setError(null);
+                          break;
+                      }
                     } else {
                       throw e;
                     }

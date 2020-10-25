@@ -4,16 +4,18 @@ import { TouchableHighlight } from "react-native-gesture-handler";
 import { IconButton } from "react-native-paper";
 import { Avatar } from "./Avatar";
 
-interface RectangleScrollerProps {
-  elements: ASElement[];
+interface RectangleScrollerProps<T extends string | number> {
+  elements: ASElement<T>[];
   showIcon?: boolean;
-  onPress?: (key: string) => void;
-  onPositive?: (key: string) => void;
-  onNegative?: (key: string) => void;
+  onPress?: (key: T) => void;
+  onPositive?: (key: T) => void;
+  onNegative?: (key: T) => void;
 }
 
 //TODO: add a way to mark element as disabled
-export function RectangleScroller(props: RectangleScrollerProps) {
+export function RectangleScroller<T extends string | number>(
+  props: RectangleScrollerProps<T>
+) {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {props.elements.map(({ key, name, icon }, i) => (
