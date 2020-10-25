@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { Avatar } from "../Avatar";
@@ -17,23 +17,26 @@ interface MessageProps {
 export function Message(props: MessageProps) {
   const { message } = props;
   const { author } = message;
-  return (
-    <TouchableHighlight
-      containerStyle={styles.root}
-      style={styles.root}
-      onPress={props.onPress}
-      onLongPress={props.onLongPress}
-    >
-      <View style={styles.message}>
+  return useMemo(
+    () => (
+      <View style={styles.root}>
         <Avatar label={author.name} size={48} />
-        <View style={styles.inner}>
-          <Text style={styles.author}>{author.name}</Text>
-          <View style={styles.content}>
-            <Text style={styles.textContent}>{message.content}</Text>
+        <TouchableHighlight
+          containerStyle={styles.root}
+          style={styles.message}
+          onPress={props.onPress}
+          onLongPress={props.onLongPress}
+        >
+          <View style={styles.inner}>
+            <Text style={styles.author}>{author.name}</Text>
+            <View style={styles.content}>
+              <Text style={styles.textContent}>{message.content}</Text>
+            </View>
           </View>
-        </View>
+        </TouchableHighlight>
       </View>
-    </TouchableHighlight>
+    ),
+    []
   );
 }
 
@@ -42,15 +45,18 @@ const styles = StyleSheet.create({
     margin: 4,
     maxWidth: "100%",
     overflow: "hidden",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingLeft: 8,
   },
   message: {
     display: "flex",
     flexDirection: "row",
     flexGrow: 1,
     alignItems: "center",
+    padding: 0,
   },
   inner: {
-    marginLeft: 8,
     padding: 4,
     borderRadius: 8,
     backgroundColor: "#000",
