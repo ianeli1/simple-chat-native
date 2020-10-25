@@ -48,6 +48,14 @@ const client = new ApolloClient({
   link: splitLink,
 });
 
+const theme = {
+  ...DarkTheme,
+  colors: {
+    ...DarkTheme.colors,
+    primary: "#5f9ea0",
+  },
+} as typeof DarkTheme;
+
 export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
@@ -57,7 +65,7 @@ export default function App() {
     return (
       <ApolloProvider {...{ client }}>
         <SafeAreaProvider>
-          <PaperProvider theme={DarkTheme}>
+          <PaperProvider theme={theme}>
             <UserProvider>
               <Navigation colorScheme={colorScheme} />
             </UserProvider>
