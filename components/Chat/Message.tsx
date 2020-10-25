@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { TouchableHighlight } from "react-native-gesture-handler";
-import { Subheading } from "react-native-paper";
 import { Avatar } from "../Avatar";
+import { GetChannelQuery } from "../../generated/graphql";
 
 interface MessageProps {
-  message: Message;
+  message: NonNullable<GetChannelQuery["channel"]>["messages"][0];
   onLongPress?: () => void;
   onPress?: () => void;
 }
@@ -16,23 +16,27 @@ interface MessageProps {
  */
 export function Message(props: MessageProps) {
   const { message } = props;
-  return (
-    <TouchableHighlight
-      containerStyle={styles.root}
-      style={styles.root}
-      onPress={props.onPress}
-      onLongPress={props.onLongPress}
-    >
-      <View style={styles.message}>
-        <Avatar label={message.name} size={48} />
-        <View style={styles.inner}>
-          <Text style={styles.author}>{message.name}</Text>
-          <View style={styles.content}>
-            <Text style={styles.textContent}>{message.message}</Text>
+  const { author } = message;
+  return useMemo(
+    () => (
+      <View style={styles.root}>
+        <Avatar label={author.name} size={48} />
+        <TouchableHighlight
+          containerStyle={styles.root}
+          style={styles.message}
+          onPress={props.onPress}
+          onLongPress={props.onLongPress}
+        >
+          <View style={styles.inner}>
+            <Text style={styles.author}>{author.name}</Text>
+            <View style={styles.content}>
+              <Text style={styles.textContent}>{message.content}</Text>
+            </View>
           </View>
-        </View>
+        </TouchableHighlight>
       </View>
-    </TouchableHighlight>
+    ),
+    []
   );
 }
 
@@ -41,15 +45,18 @@ const styles = StyleSheet.create({
     margin: 4,
     maxWidth: "100%",
     overflow: "hidden",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingLeft: 8,
   },
   message: {
     display: "flex",
     flexDirection: "row",
     flexGrow: 1,
     alignItems: "center",
+    padding: 0,
   },
   inner: {
-    marginLeft: 8,
     padding: 4,
     borderRadius: 8,
     backgroundColor: "#000",

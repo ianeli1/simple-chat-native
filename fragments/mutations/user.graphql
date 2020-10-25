@@ -1,0 +1,31 @@
+mutation Register(
+  $token: String!
+  $name: String!
+  $email: String!
+  $birthday: DateTime!
+) {
+  createUser(
+    userData: { name: $name, email: $email, birthday: $birthday }
+    token: $token
+  ) {
+    id
+    name
+    email
+  }
+}
+
+mutation RemoveFriend($id: String!) {
+  removeFriend(userId: $id)
+}
+
+mutation SendFriendRequest($id: String!) {
+  sendRequest(userId: $id)
+}
+
+mutation AcceptFriendRequest($id: String!) {
+  acceptRequest(userId: $id)
+}
+
+mutation DeleteFriendRequest($id: String!) {
+  declineRequest(userId: $id)
+}

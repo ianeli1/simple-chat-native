@@ -8,11 +8,11 @@ interface TopBarProps {
 }
 
 export function TopBar(props: TopBarProps) {
-  const { currentChannel } = useContext(channelContext);
+  const { channel } = useContext(channelContext);
   return (
     <View style={styles.root}>
       <IconButton icon="menu" onPress={props.onMenu} size={32} />
-      <Text style={styles.title}>{currentChannel}</Text>
+      {channel && <Text style={styles.title}>{channel.name}</Text>}
     </View>
   );
 }

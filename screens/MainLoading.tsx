@@ -10,11 +10,13 @@ export function MainLoading({
 }: {
   navigation: StackNavigationProp<RootStackParamList, "Loading">;
 }) {
-  const { user } = useContext(userContext);
-  if (user instanceof Object) {
-    navigation.navigate("Root");
-  } else if (!(user ?? true)) {
-    navigation.navigate("Login");
+  const { user, loading } = useContext(userContext);
+  if (!loading) {
+    if (user) {
+      navigation.navigate("Root");
+    } else {
+      navigation.navigate("Login");
+    }
   }
   return (
     <View style={styles.root}>

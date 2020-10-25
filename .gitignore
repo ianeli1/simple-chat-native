@@ -11,5 +11,5 @@ web-build/
 
 # macOS
 .DS_Store
-dataHandler/secretKey.ts
+secretKey.ts
 yarn-error.log

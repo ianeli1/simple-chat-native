@@ -1,0 +1,28 @@
+subscription NewMessage($id: Float!) {
+  newMessage(channelId: $id) {
+    id
+    content
+    image
+    createdAt
+    emotes {
+      id
+      name
+      image
+    }
+    invite {
+      id
+      owner {
+        id
+        name
+      }
+      expire
+    }
+    author {
+      id
+      name
+    }
+    channel {
+      id
+    }
+  }
+}

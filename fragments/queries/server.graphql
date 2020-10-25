@@ -1,0 +1,15 @@
+query GetInvites($id: Float!) {
+  invites(serverId: $id) {
+    id
+    createdAt
+    expire
+    owner {
+      id
+      name
+    }
+    author {
+      id
+      name
+    }
+  }
+}

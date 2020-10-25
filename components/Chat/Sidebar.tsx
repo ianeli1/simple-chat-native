@@ -10,22 +10,31 @@ import { userContext } from "../Providers/UserProvider";
 import { RectangleScroller } from "../RectangleScroller";
 
 export function Sidebar() {
-  const { user } = useContext(userContext);
-  const { setCurrentServer, currentServer, serverData } = useContext(
+  const user = useContext(userContext);
+  const { setCurrentServer, currentServer, servers, server } = useContext(
     serverContext
   );
   const { setCurrentChannel, currentChannel } = useContext(channelContext);
+  const serverElements: ASElement<number>[] =
+    servers?.map(({ id, name }) => ({
+      key: id,
+      name,
+    })) ?? [];
+  const channels: ASElement<number>[] =
+    server?.channels.map(({ id, name }) => ({
+      key: id,
+      name,
+    })) ?? [];
   return (
     <View style={styles.root}>
       <ScrollView style={styles.serverList}>
         <AvatarScroller
           vertical
-          elements={
-            (user || null)?.servers?.map(
-              (serverId, i) => ({ key: serverId, name: serverId } as ASElement)
-            ) || []
-          }
-          onElementClick={(serverId) => setCurrentServer(serverId)}
+          elements={serverElements}
+          onElementClick={(serverId) => {
+            setCurrentServer(serverId);
+            console.log("clicked on server", serverId);
+          }}
         />
       </ScrollView>
       <ScrollView>
@@ -43,12 +52,11 @@ export function Sidebar() {
           </View>
         </TouchableRipple>
         <RectangleScroller
-          elements={
-            serverData?.channels.map(
-              (channel) => ({ key: channel, name: channel } as ASElement)
-            ) || []
-          }
-          onPress={(key) => setCurrentChannel(key)}
+          elements={channels}
+          onPress={(key) => {
+            setCurrentChannel(key);
+            console.log("clicked on channel", key);
+          }}
         />
       </ScrollView>
     </View>

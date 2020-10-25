@@ -1,48 +1,11 @@
-import React, { useContext } from "react";
+import React from "react";
 import { View, StyleSheet, StatusBar } from "react-native";
 import DrawerLayout from "react-native-gesture-handler/DrawerLayout";
 import { MessageList } from "../components/Chat/MessageList";
 import { NewMessageBox } from "../components/Chat/NewMessageBox";
 import { Sidebar } from "../components/Chat/Sidebar";
 import { TopBar } from "../components/Chat/TopBar";
-import {
-  channelContext,
-  ChannelProvider,
-} from "../components/Providers/ChannelProvider";
-import ServerProvider, {
-  serverContext,
-} from "../components/Providers/ServerProvider";
-
-const dummyMessages: Message[] = [
-  {
-    id: 1,
-    message: "test1",
-    name: "longusernamehahaitneverends",
-    timestamp: new Date(),
-    userId: "1",
-  },
-  {
-    id: 2,
-    message: "test1",
-    name: "user1",
-    timestamp: new Date(),
-    userId: "1",
-  },
-  {
-    id: 3,
-    message: "longtexthahaomgdoesiteverendfuckthedeveloperlmao",
-    name: "user1",
-    timestamp: new Date(),
-    userId: "1",
-  },
-  {
-    id: 4,
-    message: "test1",
-    name: "user1",
-    timestamp: new Date(),
-    userId: "1",
-  },
-];
+import { ChannelProvider } from "../components/Providers/ChannelProvider";
 
 export function Chat() {
   const drawerProps = {
@@ -54,22 +17,24 @@ export function Chat() {
   let drawer: DrawerLayout | null;
   return (
     <View style={styles.root}>
-      <DrawerLayout
-        {...drawerProps}
-        drawerPosition="left"
-        renderNavigationView={() => <Sidebar />}
-        ref={(d) => {
-          drawer = d;
-        }}
-      >
-        <View style={styles.test}>
-          <TopBar onMenu={() => drawer?.openDrawer()} />
-          <View style={styles.chatbox}>
-            <MessageList />
+      <ChannelProvider>
+        <DrawerLayout
+          {...drawerProps}
+          drawerPosition="left"
+          renderNavigationView={() => <Sidebar />}
+          ref={(d) => {
+            drawer = d;
+          }}
+        >
+          <View style={styles.test}>
+            <TopBar onMenu={() => drawer?.openDrawer()} />
+            <View style={styles.chatbox}>
+              <MessageList />
+            </View>
+            <NewMessageBox />
           </View>
-          <NewMessageBox />
-        </View>
-      </DrawerLayout>
+        </DrawerLayout>
+      </ChannelProvider>
     </View>
   );
 }

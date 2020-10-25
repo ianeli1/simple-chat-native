@@ -3,11 +3,12 @@ import { View, Text, StyleSheet } from "react-native";
 import { IconButton, TextInput } from "react-native-paper";
 import { channelContext } from "../Providers/ChannelProvider";
 import { userContext } from "../Providers/UserProvider";
+import { useSendMessageMutation } from "../../generated/graphql";
 
 export function NewMessageBox() {
   const [text, setText] = useState("");
-  const { messageFunctions } = useContext(channelContext);
-  const { user } = useContext(userContext);
+  const { currentChannel } = useContext(channelContext);
+  const [sendMessage, { loading }] = useSendMessageMutation();
   return (
     <View style={styles.root}>
       <IconButton icon="image" style={styles.imageBtn} />
@@ -25,16 +26,14 @@ export function NewMessageBox() {
           styles.sendBtn,
           { backgroundColor: text.length > 0 ? "#5f9ea0" : "#000" },
         ]}
-        onPress={() => {
-          if (text && user) {
-            const message = {
-              message: text,
-              userId: user.userId,
-              name: user.name,
-              timestamp: new Date(),
-            };
-            console.log("Sending message...", { message, user });
-            messageFunctions?.send(message);
+        disabled={loading}
+        onPress={async () => {
+          if (text && currentChannel) {
+            await sendMessage({
+              variables: { content: text, id: currentChannel! },
+            });
+            setText("");
+            console.log("clean");
           }
         }}
       />

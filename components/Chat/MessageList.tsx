@@ -1,22 +1,27 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { FlatList, StyleSheet } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
+import { ErrorBoundary } from "../ErrorCatcher";
 import { channelContext } from "../Providers/ChannelProvider";
 import { Message } from "./Message";
 
 export function MessageList() {
   const { channel } = useContext(channelContext);
-  const messages = channel
-    ? Object.values(channel).sort(
-        (a, b) => a.timestamp.valueOf() - b.timestamp.valueOf()
-      )
-    : [];
+  const scrollViewRef = useRef<ScrollView>(null);
+  const messages = channel ? channel.messages.slice(-50) : [];
+
+  useEffect(() => {
+    scrollViewRef.current?.scrollToEnd({ animated: true });
+  }, [channel?.messages.slice(-1)[0]?.id || 0]);
+
   return (
-    <FlatList
-      data={messages}
-      renderItem={({ item: message }) => <Message message={message} />}
-      keyExtractor={(item) => item.id?.toString() || item.timestamp.toString()}
-      style={styles.messageList}
-    />
+    <ErrorBoundary>
+      <ScrollView ref={scrollViewRef}>
+        {messages.map((message) => (
+          <Message message={message} key={message.id} />
+        ))}
+      </ScrollView>
+    </ErrorBoundary>
   );
 }
 
