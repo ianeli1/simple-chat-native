@@ -10,13 +10,16 @@ interface RectangleScrollerProps<T extends string | number> {
   onPress?: (key: T) => void;
   onPositive?: (key: T) => void;
   onNegative?: (key: T) => void;
+
+  /**Text to be displayed if the element array is empty */
+  placeholder?: string;
 }
 
 //TODO: add a way to mark element as disabled
 export function RectangleScroller<T extends string | number>(
   props: RectangleScrollerProps<T>
 ) {
-  return (
+  return props.elements.length > 0 ? (
     <ScrollView contentContainerStyle={styles.container}>
       {props.elements.map(({ key, name, icon }, i) => (
         <Rectangle
@@ -34,6 +37,10 @@ export function RectangleScroller<T extends string | number>(
         />
       ))}
     </ScrollView>
+  ) : (
+    <Text style={{ color: "#FFF" }}>
+      {props.placeholder ?? "Uh oh, something went wrong"}
+    </Text>
   );
 }
 
