@@ -11,14 +11,6 @@ export type BottomTabParamList = {
   Landing: undefined;
 };
 
-export type TabOneParamList = {
-  TabOneScreen: undefined;
-};
-
-export type TabTwoParamList = {
-  TabTwoScreen: undefined;
-};
-
 declare global {
   interface ASElement<keyType extends string | number> {
     key: keyType;
