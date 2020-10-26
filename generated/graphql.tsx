@@ -543,6 +543,15 @@ export type MyServersQuery = (
         { __typename?: 'Server' }
         & Pick<Server, 'id' | 'name'>
       ) }
+    )>, author: (
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'name'>
+    ), invites: Array<(
+      { __typename?: 'Invite' }
+      & Pick<Invite, 'id' | 'expire'>
+    )>, members: Array<(
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'name'>
     )> }
   )>> }
 );
@@ -1274,6 +1283,18 @@ export const MyServersDocument = gql`
         id
         name
       }
+    }
+    author {
+      id
+      name
+    }
+    invites {
+      id
+      expire
+    }
+    members {
+      id
+      name
     }
     updatedAt
   }

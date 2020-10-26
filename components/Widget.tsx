@@ -33,7 +33,9 @@ export function Widget(props: WidgetProps) {
         )}
         {props.onDelete && <IconButton icon="close" onPress={props.onDelete} />}
       </View>
-      <View style={styles.content}>{props.children}</View>
+      <View style={[styles.content, { display: hidden ? "none" : "flex" }]}>
+        {props.children}
+      </View>
     </View>
   );
 }

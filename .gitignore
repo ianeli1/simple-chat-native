@@ -13,3 +13,4 @@ web-build/
 .DS_Store
 secretKey.ts
 yarn-error.log
+.vscode/settings.json
