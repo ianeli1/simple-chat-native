@@ -8,6 +8,14 @@ interface WidgetProps {
   title: string;
   hideable?: boolean;
   onDelete?: () => void;
+  /**
+   * This widget's action, an IconButton will be added to the top left when enabled
+   */
+  action?: {
+    /**MaterialIcon name */
+    icon: string;
+    onPress: () => void;
+  };
 }
 
 export function Widget(props: WidgetProps) {
@@ -16,6 +24,7 @@ export function Widget(props: WidgetProps) {
     <View style={styles.root}>
       <View style={styles.titleContainer}>
         <Text style={styles.title}>{props.title}</Text>
+        {props.action && <IconButton {...props.action} />}
         {props.hideable && (
           <IconButton
             icon={hidden ? "chevron-up" : "chevron-down"}

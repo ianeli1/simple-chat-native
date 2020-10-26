@@ -6,7 +6,7 @@ import { Avatar } from "react-native-paper";
 interface AvatarScrollerProps<T extends string | number> {
   size?: number;
   elements: ASElement<T>[];
-  onElementClick?: (key: T) => void;
+  onElementClick?: (key: T, element: ASElement<T>) => void;
   vertical?: boolean;
 
   /**Text to be displayed if the element array is empty */
@@ -18,18 +18,20 @@ export function AvatarScroller<T extends string | number>(
 ) {
   return props.elements.length > 0 ? (
     <ScrollView style={styles.root} horizontal={!props.vertical}>
-      {props.elements.map(({ key, name, icon }, i) => (
+      {props.elements.map((element, i) => (
         <TouchableOpacity
           onPress={
-            props.onElementClick ? () => props.onElementClick!(key) : undefined
+            props.onElementClick
+              ? () => props.onElementClick!(element.key, element)
+              : undefined
           }
           key={i}
           style={styles.element}
         >
-          {icon ? (
-            <Avatar.Image source={{ uri: icon }} />
+          {element.icon ? (
+            <Avatar.Image source={{ uri: element.icon }} />
           ) : (
-            <Avatar.Text label={name.slice(0, 2).toUpperCase()} />
+            <Avatar.Text label={element.name.slice(0, 2).toUpperCase()} />
           )}
         </TouchableOpacity>
       ))}

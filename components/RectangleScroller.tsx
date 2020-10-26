@@ -7,9 +7,9 @@ import { Avatar } from "./Avatar";
 interface RectangleScrollerProps<T extends string | number> {
   elements: ASElement<T>[];
   showIcon?: boolean;
-  onPress?: (key: T) => void;
-  onPositive?: (key: T) => void;
-  onNegative?: (key: T) => void;
+  onPress?: (key: T, element: ASElement<T>) => void;
+  onPositive?: (key: T, element: ASElement<T>) => void;
+  onNegative?: (key: T, element: ASElement<T>) => void;
 
   /**Text to be displayed if the element array is empty */
   placeholder?: string;
@@ -21,19 +21,27 @@ export function RectangleScroller<T extends string | number>(
 ) {
   return props.elements.length > 0 ? (
     <ScrollView contentContainerStyle={styles.container}>
-      {props.elements.map(({ key, name, icon }, i) => (
+      {props.elements.map((element, i) => (
         <Rectangle
           key={i}
-          title={name}
+          title={element.name}
           showIcon={props.showIcon}
-          icon={icon}
+          icon={element.icon}
           onPositive={
-            props.onPositive ? () => props.onPositive!(key) : undefined
+            props.onPositive
+              ? () => props.onPositive!(element.key, element)
+              : undefined
           }
           onNegative={
-            props.onNegative ? () => props.onNegative!(key) : undefined
+            props.onNegative
+              ? () => props.onNegative!(element.key, element)
+              : undefined
           }
-          onPress={props.onPress ? () => props.onPress!(key) : undefined}
+          onPress={
+            props.onPress
+              ? () => props.onPress!(element.key, element)
+              : undefined
+          }
         />
       ))}
     </ScrollView>
@@ -94,7 +102,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignContent: "center",
-
+    alignItems: "center",
     margin: 4,
   },
   rectangleText: {
@@ -105,6 +113,7 @@ const styles = StyleSheet.create({
     height: 64,
     display: "flex",
     alignContent: "center",
+    justifyContent: "center",
     flexGrow: 1,
   },
   title: {
