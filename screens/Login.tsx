@@ -1,5 +1,5 @@
 import { StackNavigationProp } from "@react-navigation/stack";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import { Widget } from "../components/Widget";
@@ -18,6 +18,15 @@ export function Login({
   if (!loading && data) {
     navigation.navigate("Root");
   }
+
+  useEffect(() => {
+    const unsub = navigation.addListener("beforeRemove", (e) => {
+      e.preventDefault();
+    });
+    return () => {
+      unsub();
+    };
+  }, [navigation]);
   return (
     <View style={styles.root}>
       <View style={styles.container}>
@@ -88,11 +97,24 @@ const styles = StyleSheet.create({
     flex: 1,
     display: "flex",
     justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#4C7E7F",
   },
   container: {
-    width: "100%",
+    width: "90%",
+    backgroundColor: "#000",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 12,
+    },
+    shadowOpacity: 0.58,
+    shadowRadius: 16.0,
+
+    elevation: 24,
   },
   row: {
+    margin: 8,
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
