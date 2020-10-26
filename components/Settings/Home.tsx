@@ -44,6 +44,7 @@ export function Home({
                 onPress={() => navigation.navigate("Server", { serverId: id })}
                 title={name}
                 left={() => <Avatar label={name} />}
+                key={id}
               />
             ))}
           </List.Accordion>
