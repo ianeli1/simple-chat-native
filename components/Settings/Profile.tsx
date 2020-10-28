@@ -3,9 +3,11 @@ import { ScrollView, Alert } from "react-native";
 import {
   useAcceptFriendRequestMutation,
   useChangeAvatarMutation,
+  useCreateServerMutation,
   useDeleteFriendRequestMutation,
   useLeaveServerMutation,
   useRemoveFriendMutation,
+  useSendFriendRequestMutation,
 } from "../../generated/graphql";
 import { AvatarNameCombo } from "../AvatarNameCombo";
 import { Loading } from "../Loading";
@@ -22,12 +24,14 @@ import { Widget } from "../Widget";
  */
 export function Profile() {
   const { user, loading, refetch } = useContext(userContext);
-  const { selectImage } = useContext(dialogContext);
+  const { selectImage, inputText } = useContext(dialogContext);
   const [leaveServer] = useLeaveServerMutation();
   const [unfriend] = useRemoveFriendMutation();
   const [removeFriendRequest] = useDeleteFriendRequestMutation();
   const [acceptFriendRequest] = useAcceptFriendRequestMutation();
+  const [sendFriendRequest] = useSendFriendRequestMutation();
   const [changeAvatar] = useChangeAvatarMutation();
+  const [createServer] = useCreateServerMutation();
   return loading ? (
     <Loading />
   ) : (
@@ -52,7 +56,28 @@ export function Profile() {
           })
         }
       />
-      <Widget title="Your servers">
+      <Widget
+        title="Your servers"
+        action={{
+          icon: "plus",
+          onPress: async () => {
+            const name = await inputText({
+              title: "Name of the server",
+              fields: ["Name"],
+            });
+            if (name) {
+              const newServer = await createServer({
+                variables: { name: name[0] },
+              });
+              if (newServer.data?.createServer.error) {
+                Alert.alert("Error", newServer.data.createServer.error.code);
+              } else {
+                refetch();
+              }
+            }
+          },
+        }}
+      >
         <RectangleScroller
           showIcon
           elements={user!.servers.map(({ name, id }) => ({
@@ -62,7 +87,7 @@ export function Profile() {
           placeholder="You haven't joined any servers yet."
           onNegative={(_, server) => {
             Alert.alert(
-              "Leave server",
+              "Unfriend",
               `Are you sure you want to leave "${server?.name ?? "???"}"?`,
               [
                 { text: "Cancel", style: "cancel" },
@@ -84,7 +109,20 @@ export function Profile() {
         title="Your friends"
         action={{
           icon: "plus",
-          onPress: () => Alert.alert("Uh oh", "TBI"), //TODO: implement this lmao
+          onPress: async () => {
+            const id = await inputText({
+              title: "Friend code",
+              fields: ["Friend code"],
+            });
+            if (id) {
+              const req = await sendFriendRequest({ variables: { id: id[0] } });
+              if (req.data?.sendRequest) {
+                Alert.alert("Error", "unknown error?");
+              } else {
+                refetch();
+              }
+            }
+          }, //TODO: implement this lmao
         }}
       >
         <RectangleScroller
