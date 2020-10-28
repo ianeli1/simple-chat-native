@@ -1,8 +1,10 @@
 import * as firebase from "firebase";
+import uuid from "uuid";
 import { firebaseConfig } from "./secretKey";
 
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
+const storage = firebase.storage();
 
 /**
  *
@@ -29,5 +31,31 @@ export async function signIn(email: string, password: string) {
     } else {
       throw e;
     }
+  }
+}
+
+export async function uploadImage(
+  uri: string,
+  progress?: (percentage: number) => void
+): Promise<string> {
+  try {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    const ref = storage.ref().child(uuid.v4());
+    await new Promise((resolve, reject) => {
+      ref.put(blob).on(
+        "state_changed",
+        progress &&
+          ((snap) => progress((snap.bytesTransferred / snap.totalBytes) * 100)),
+        (e) => {
+          console.log("An error ocurred while uploading an image", { uri, e });
+        },
+        () => resolve()
+      );
+    });
+
+    return (await ref.getDownloadURL()) as string;
+  } catch (e) {
+    throw e;
   }
 }
