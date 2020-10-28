@@ -1,9 +1,9 @@
 import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import React, { useContext, useMemo } from "react";
-import { View, Text, ScrollView, StyleSheet, Alert } from "react-native";
-import { ActivityIndicator, Button } from "react-native-paper";
-import { useGetInvitesQuery, useMyServersQuery } from "../../generated/graphql";
+import React, { useEffect, useMemo } from "react";
+import { ScrollView, StyleSheet, Alert } from "react-native";
+import { Button } from "react-native-paper";
+import { useGetServerQuery } from "../../generated/graphql";
 import { StackList } from "../../screens/Settings";
 import { AvatarNameCombo } from "../AvatarNameCombo";
 import { AvatarScroller } from "../AvatarScroller";
@@ -18,10 +18,16 @@ export default function Server({
   navigation: StackNavigationProp<StackList, "Server">;
   route: RouteProp<StackList, "Server">;
 }) {
-  const { loading, data, refetch } = useMyServersQuery();
-  const server =
-    data?.myServers?.find(({ id }) => id === route.params.serverId) ?? null;
+  const { data, refetch, loading } = useGetServerQuery({
+    skip: !route.params.serverId,
+  });
   const id = route.params.serverId;
+  const server = data?.server.server ?? null;
+
+  useEffect(() => {
+    (async () => await refetch({ id }))();
+  }, [id]);
+
   const emotes: ASElement<number>[] = useMemo(
     () =>
       server?.emotes.map(({ id, name, image }) => ({
@@ -37,7 +43,7 @@ export default function Server({
   //TODO: add delete emote mutation
   //TODO: add addEmote mutation
   //TODO: add delete channel mutation
-  return loading ? (
+  return !server || loading ? (
     <Loading />
   ) : (
     <ScrollView contentContainerStyle={styles.root}>

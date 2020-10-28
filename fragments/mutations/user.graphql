@@ -8,9 +8,26 @@ mutation Register(
     userData: { name: $name, email: $email, birthday: $birthday }
     token: $token
   ) {
-    id
-    name
-    email
+    user {
+      id
+      name
+      email
+      birthday
+    }
+    error {
+      code
+      message
+    }
+  }
+}
+
+mutation ChangeAvatar($imageUrl: String!) {
+  changeAvatar(image: $imageUrl) {
+    ok
+    error {
+      code
+      message
+    }
   }
 }
 

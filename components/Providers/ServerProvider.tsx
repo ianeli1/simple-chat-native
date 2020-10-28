@@ -1,20 +1,18 @@
 import React, { createContext, useState } from "react";
 import {
-  MyServersQuery,
-  useMyServersQuery,
   Server,
+  useGetServerQuery,
+  GetServerQuery,
 } from "../../generated/graphql";
-
-type ServerList = Exclude<MyServersQuery["myServers"], undefined>;
 
 interface ServerContext {
   /**The id of the current server */
   currentServer: number | null;
-  setCurrentServer: (serverId: number | null) => void;
-  /**The list of servers the current user is a member of */
-  servers: ServerList;
+  setCurrentServer: (serverId: number) => void;
   /**The current server */
-  server: Exclude<ServerList, null>[0] | null;
+  server: Exclude<GetServerQuery["server"]["server"], undefined>;
+  error: Exclude<GetServerQuery["server"]["error"], undefined>;
+  loading: boolean;
 }
 
 export const serverContext = createContext<ServerContext>(undefined!);
@@ -25,13 +23,23 @@ export default function ServerProvider({
   children: React.ReactNode;
 }) {
   const [currentServer, setCurrentServer] = useState<number | null>(null);
-  const servers: ServerList = useMyServersQuery().data?.myServers ?? null;
-  /**The current server */
-  const server: ServerContext["server"] =
-    servers?.find(({ id }) => id == currentServer) ?? null;
+  const { loading, data, refetch } = useGetServerQuery({
+    skip: !currentServer,
+  });
+
+  async function changeServer(id: number) {
+    setCurrentServer(id);
+    await refetch({ id });
+  }
   return (
     <serverContext.Provider
-      value={{ servers, server, currentServer, setCurrentServer }}
+      value={{
+        server: data?.server?.server ?? null,
+        currentServer,
+        setCurrentServer: changeServer,
+        error: data?.server.error ?? null,
+        loading,
+      }}
     >
       {children}
     </serverContext.Provider>

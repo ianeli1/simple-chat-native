@@ -10,14 +10,13 @@ import { userContext } from "../Providers/UserProvider";
 import { RectangleScroller } from "../RectangleScroller";
 
 export function Sidebar() {
-  const user = useContext(userContext);
-  const { setCurrentServer, currentServer, servers, server } = useContext(
-    serverContext
-  );
+  const { user } = useContext(userContext);
+  const { currentServer, setCurrentServer, server } = useContext(serverContext);
   const { setCurrentChannel, currentChannel } = useContext(channelContext);
   const serverElements: ASElement<number>[] =
-    servers?.map(({ id, name }) => ({
+    user?.servers.map(({ id, name, icon }) => ({
       key: id,
+      icon: icon ?? undefined,
       name,
     })) ?? [];
   const channels: ASElement<number>[] =
@@ -41,7 +40,7 @@ export function Sidebar() {
         <TouchableRipple style={styles.titleBtn} onPress={() => null}>
           <View style={styles.title}>
             <Title style={{ flexShrink: 1, flexGrow: 1, lineHeight: 20 }}>
-              {currentServer}
+              {server?.name ?? "Unk"}
             </Title>
             <MaterialCommunityIcons
               name="dots-vertical"

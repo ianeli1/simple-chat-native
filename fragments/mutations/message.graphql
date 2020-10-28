@@ -1,5 +1,9 @@
 mutation SendMessage($id: Float!, $content: String!) {
   createMessage(channelId: $id, message: { content: $content }) {
-    id
+    ok
+    error {
+      code
+      message
+    }
   }
 }

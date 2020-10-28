@@ -1,41 +1,45 @@
-query GetChannels($id: Float!) {
-  channels(serverId: $id) {
-    id
-    name
-    updatedAt
-  }
-}
-
 query GetChannel($id: Float!) {
   channel(channelId: $id) {
-    id
-    name
-    owner {
+    channel {
       id
-      name
-    }
-    messages {
-      id
-      content
-      image
       createdAt
-      emotes {
-        id
-        name
-        image
-      }
-      invite {
-        id
-        owner {
-          id
-          name
-        }
-        expire
-      }
+      updatedAt
+      name
       author {
         id
         name
       }
+      owner {
+        id
+        name
+      }
+      messages {
+        id
+        content
+        image
+        createdAt
+        emotes {
+          id
+          name
+          image
+        }
+        invite {
+          id
+          owner {
+            id
+            name
+          }
+          expire
+        }
+        author {
+          id
+          name
+        }
+      }
+    }
+    error {
+      code
+      message
     }
   }
 }

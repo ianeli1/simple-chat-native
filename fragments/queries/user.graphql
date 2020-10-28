@@ -1,62 +1,51 @@
 query Me {
   me {
-    id
-    name
-    createdAt
-    servers {
+    user {
       id
       name
+      createdAt
+      servers {
+        id
+        name
+        icon
+        updatedAt
+        channels {
+          id
+          name
+          updatedAt
+        }
+      }
+      friendRequests {
+        id
+        name
+      }
+      friends {
+        id
+        name
+      }
     }
-    friendRequests {
-      id
-      name
-    }
-    friends {
-      id
-      name
+    error {
+      code
+      message
     }
   }
 }
 
 query User($id: String!) {
   user(id: $id) {
-    id
-    name
-    birthday
-  }
-}
-
-query MyServers {
-  myServers {
-    id
-    name
-    channels {
+    user {
       id
       name
-      updatedAt
+      icon
+      birthday
+      createdAt
+      isFriend
+      sentFriendRequest
     }
-    emotes {
-      id
-      name
-      image
-      owner {
-        id
-        name
-      }
+    error {
+      code
+      message
     }
-    author {
-      id
-      name
-    }
-    invites {
-      id
-      expire
-    }
-    members {
-      id
-      name
-    }
-    updatedAt
   }
 }
 
@@ -81,8 +70,19 @@ query Login($token: String!) {
 
 query myEmotes {
   myEmotes {
-    id
-    name
-    image
+    emotes {
+      id
+      image
+      name
+      owner {
+        id
+        name
+        icon
+      }
+    }
+    error {
+      code
+      message
+    }
   }
 }

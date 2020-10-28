@@ -1,30 +1,40 @@
 import React, { createContext } from "react";
-import { useMeQuery, MeQuery, Exact } from "../../generated/graphql";
+import {
+  useMeQuery,
+  MeQuery,
+  useMyEmotesQuery,
+  MyEmotesQuery,
+} from "../../generated/graphql";
 import { ApolloQueryResult } from "@apollo/client";
 
 export const userContext = createContext<{
-  user: Exclude<MeQuery["me"], undefined> | null;
+  user: Exclude<MeQuery["me"]["user"], undefined>;
+  error: Exclude<MeQuery["me"]["error"], undefined>;
   loading: boolean;
-  refetchUser(
-    variables?:
-      | Partial<
-          Exact<{
-            [key: string]: never;
-          }>
-        >
-      | undefined
-  ): Promise<ApolloQueryResult<MeQuery>>;
+  refetch(): Promise<ApolloQueryResult<MeQuery>>;
+  emotes: {
+    list: Exclude<MyEmotesQuery["myEmotes"]["emotes"], undefined>;
+    error: Exclude<MyEmotesQuery["myEmotes"]["error"], undefined>;
+    refetch(): Promise<ApolloQueryResult<MyEmotesQuery>>;
+  };
 }>(undefined!);
 
 //TODO: Use User subscription
 export function UserProvider({ children }: { children: React.ReactNode }) {
-  const queryResult = useMeQuery();
+  const { data, loading, refetch } = useMeQuery();
+  const { data: emoteData, refetch: emoteRefetch } = useMyEmotesQuery();
   return (
     <userContext.Provider
       value={{
-        user: queryResult.data?.me ?? null,
-        loading: queryResult.loading,
-        refetchUser: queryResult.refetch,
+        user: data?.me.user ?? null,
+        error: data?.me.error ?? null,
+        loading,
+        refetch,
+        emotes: {
+          list: emoteData?.myEmotes.emotes ?? null,
+          error: emoteData?.myEmotes.error ?? null,
+          refetch: emoteRefetch,
+        },
       }}
     >
       {children}

@@ -5,7 +5,7 @@ import { Avatar } from "../Avatar";
 import { GetChannelQuery } from "../../generated/graphql";
 
 interface MessageProps {
-  message: NonNullable<GetChannelQuery["channel"]>["messages"][0];
+  message: NonNullable<GetChannelQuery["channel"]["channel"]>["messages"][0];
   onLongPress?: () => void;
   onPress?: () => void;
 }

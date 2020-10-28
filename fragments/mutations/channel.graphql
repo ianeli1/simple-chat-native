@@ -1,9 +1,19 @@
 mutation CreateChannel($name: String!, $id: Float!) {
   createChannel(name: $name, serverId: $id) {
-    id
-    name
-    owner {
-      id
+    ok
+    error {
+      code
+      message
+    }
+  }
+}
+
+mutation RemoveChannel($id: Float!) {
+  removeChannel(channelId: $id) {
+    ok
+    error {
+      code
+      message
     }
   }
 }

@@ -19,7 +19,7 @@ import { Widget } from "../Widget";
           }
  */
 export function Profile() {
-  const { user, loading, refetchUser } = useContext(userContext);
+  const { user, loading, refetch } = useContext(userContext);
   const [leaveServer] = useLeaveServerMutation();
   const [unfriend] = useRemoveFriendMutation();
   const [removeFriendRequest] = useDeleteFriendRequestMutation();
@@ -52,7 +52,7 @@ export function Profile() {
                   style: "destructive",
                   onPress: async () => {
                     await leaveServer({ variables: { id: server.key } });
-                    await refetchUser();
+                    await refetch();
                   },
                 },
               ],
@@ -86,7 +86,7 @@ export function Profile() {
                   style: "destructive",
                   onPress: async () => {
                     await unfriend({ variables: { id: friend.key } });
-                    await refetchUser();
+                    await refetch();
                   },
                 },
               ],
@@ -105,11 +105,11 @@ export function Profile() {
           placeholder="No friends requests here, yet."
           onNegative={async (id) => {
             await removeFriendRequest({ variables: { id } });
-            await refetchUser();
+            await refetch();
           }}
           onPositive={async (id) => {
             await acceptFriendRequest({ variables: { id } });
-            await refetchUser();
+            await refetch();
           }}
         />
       </Widget>

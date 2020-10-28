@@ -1,39 +1,88 @@
 mutation UseInvite($id: Float!) {
   useInvite(inviteId: $id) {
-    id
-    name
-    channels {
-      id
-      name
+    ok
+    error {
+      code
+      message
     }
   }
 }
 
 mutation CreateInvite($id: Float!, $expire: DateTime) {
   createInvite(serverId: $id, expire: $expire) {
-    id
-    expire
-    author {
+    invite {
       id
+      expire
+      createdAt
+      author {
+        id
+        name
+      }
+      owner {
+        id
+        name
+        icon
+      }
     }
-    owner {
-      id
-      name
+  }
+}
+
+mutation RemoveInvite($id: Float!) {
+  removeInvite(inviteId: $id) {
+    ok
+    error {
+      code
+      message
     }
   }
 }
 
 mutation CreateServer($name: String!) {
   createServer(name: $name) {
-    id
-    name
+    ok
+    error {
+      code
+      message
+    }
   }
 }
 
 mutation LeaveServer($id: Float!) {
   leaveServer(serverId: $id) {
-    servers {
-      id
+    ok
+    error {
+      code
+      message
+    }
+  }
+}
+
+mutation ChangeServerIcon($id: Float!, $imageUrl: String!) {
+  changeServerIcon(image: $imageUrl, serverId: $id) {
+    ok
+    error {
+      code
+      message
+    }
+  }
+}
+
+mutation CreateEmote($id: Float!, $name: String!, $imageUrl: String!) {
+  createEmote(emote: { image: $imageUrl, name: $name }, serverId: $id) {
+    ok
+    error {
+      message
+      code
+    }
+  }
+}
+
+mutation RemoveEmote($id: Float!) {
+  removeEmote(emoteId: $id) {
+    ok
+    error {
+      code
+      message
     }
   }
 }
