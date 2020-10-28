@@ -1,13 +1,17 @@
 import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import React, { useEffect, useMemo } from "react";
+import React, { useContext, useEffect, useMemo } from "react";
 import { ScrollView, StyleSheet, Alert } from "react-native";
 import { Button } from "react-native-paper";
-import { useGetServerQuery } from "../../generated/graphql";
+import {
+  useChangeServerIconMutation,
+  useGetServerQuery,
+} from "../../generated/graphql";
 import { StackList } from "../../screens/Settings";
 import { AvatarNameCombo } from "../AvatarNameCombo";
 import { AvatarScroller } from "../AvatarScroller";
 import { Loading } from "../Loading";
+import { dialogContext } from "../Providers/DialogProvider";
 import { RectangleScroller } from "../RectangleScroller";
 import { Widget } from "../Widget";
 
@@ -21,6 +25,8 @@ export default function Server({
   const { data, refetch, loading } = useGetServerQuery({
     skip: !route.params.serverId,
   });
+  const { selectImage } = useContext(dialogContext);
+  const [changeIcon] = useChangeServerIconMutation();
   const id = route.params.serverId;
   const server = data?.server.server ?? null;
 
@@ -50,7 +56,21 @@ export default function Server({
       <AvatarNameCombo
         title={server!.name}
         subtitle={`ID: ${server!.id}`}
-        icon={undefined /*TODO: add server icons*/}
+        icon={server.icon ?? undefined}
+        onAvatarClick={() =>
+          selectImage({
+            onPositive: async (imageUrl) => {
+              const result = await changeIcon({ variables: { imageUrl, id } });
+              const error = result.data?.changeServerIcon.error ?? null;
+              if (error) {
+                Alert.alert(error.code, `${error.message} | ${imageUrl}`);
+              }
+              await refetch({ id });
+            },
+            title: "Server Icon",
+            subtitle: server.name,
+          })
+        }
       />
       <Widget title="This server's emotes">
         <AvatarScroller

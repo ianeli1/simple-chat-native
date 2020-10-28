@@ -20,7 +20,7 @@ export function Message(props: MessageProps) {
   return useMemo(
     () => (
       <View style={styles.root}>
-        <Avatar label={author.name} size={48} />
+        <Avatar label={author.name} icon={author.icon ?? undefined} size={48} />
         <TouchableHighlight
           containerStyle={styles.root}
           style={styles.message}

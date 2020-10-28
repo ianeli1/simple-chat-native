@@ -3,6 +3,7 @@ query Me {
     user {
       id
       name
+      icon
       createdAt
       servers {
         id

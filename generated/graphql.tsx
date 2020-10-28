@@ -724,7 +724,7 @@ export type GetChannelQuery = (
           ) }
         )>, author: (
           { __typename?: 'User' }
-          & Pick<User, 'id' | 'name'>
+          & Pick<User, 'id' | 'name' | 'icon'>
         ) }
       )> }
     )>, error?: Maybe<(
@@ -831,7 +831,7 @@ export type MeQuery = (
     { __typename?: 'UserResponse' }
     & { user?: Maybe<(
       { __typename?: 'User' }
-      & Pick<User, 'id' | 'name' | 'createdAt'>
+      & Pick<User, 'id' | 'name' | 'icon' | 'createdAt'>
       & { servers: Array<(
         { __typename?: 'Server' }
         & Pick<Server, 'id' | 'name' | 'icon' | 'updatedAt'>
@@ -938,7 +938,7 @@ export type NewMessageSubscription = (
       ) }
     )>, author: (
       { __typename?: 'User' }
-      & Pick<User, 'id' | 'name'>
+      & Pick<User, 'id' | 'name' | 'icon'>
     ), channel: (
       { __typename?: 'Channel' }
       & Pick<Channel, 'id'>
@@ -1595,6 +1595,7 @@ export const GetChannelDocument = gql`
         author {
           id
           name
+          icon
         }
       }
     }
@@ -1806,6 +1807,7 @@ export const MeDocument = gql`
     user {
       id
       name
+      icon
       createdAt
       servers {
         id
@@ -2018,6 +2020,7 @@ export const NewMessageDocument = gql`
     author {
       id
       name
+      icon
     }
     channel {
       id

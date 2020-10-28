@@ -2,12 +2,14 @@ import React, { useContext } from "react";
 import { ScrollView, Alert } from "react-native";
 import {
   useAcceptFriendRequestMutation,
+  useChangeAvatarMutation,
   useDeleteFriendRequestMutation,
   useLeaveServerMutation,
   useRemoveFriendMutation,
 } from "../../generated/graphql";
 import { AvatarNameCombo } from "../AvatarNameCombo";
 import { Loading } from "../Loading";
+import { dialogContext } from "../Providers/DialogProvider";
 import { userContext } from "../Providers/UserProvider";
 import { RectangleScroller } from "../RectangleScroller";
 import { Widget } from "../Widget";
@@ -20,10 +22,12 @@ import { Widget } from "../Widget";
  */
 export function Profile() {
   const { user, loading, refetch } = useContext(userContext);
+  const { selectImage } = useContext(dialogContext);
   const [leaveServer] = useLeaveServerMutation();
   const [unfriend] = useRemoveFriendMutation();
   const [removeFriendRequest] = useDeleteFriendRequestMutation();
   const [acceptFriendRequest] = useAcceptFriendRequestMutation();
+  const [changeAvatar] = useChangeAvatarMutation();
   return loading ? (
     <Loading />
   ) : (
@@ -31,7 +35,22 @@ export function Profile() {
       <AvatarNameCombo
         title={user!.name}
         subtitle={user!.id}
-        onAvatarClick={() => null}
+        icon={user?.icon ?? undefined}
+        onAvatarClick={() =>
+          selectImage({
+            onPositive: async (imageUrl) => {
+              const result = await changeAvatar({ variables: { imageUrl } });
+              const error = result.data?.changeAvatar.error ?? null;
+              if (error) {
+                Alert.alert(error.code, `${error.message} | ${imageUrl}`);
+              }
+              await refetch();
+            },
+            title: "Avatar",
+            subtitle: user?.name ?? "Unk",
+            uri: user?.icon ?? undefined,
+          })
+        }
       />
       <Widget title="Your servers">
         <RectangleScroller

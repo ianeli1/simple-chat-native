@@ -20,6 +20,7 @@ subscription NewMessage($id: Float!) {
     author {
       id
       name
+      icon
     }
     channel {
       id
