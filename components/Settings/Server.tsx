@@ -57,20 +57,20 @@ export default function Server({
         title={server!.name}
         subtitle={`ID: ${server!.id}`}
         icon={server.icon ?? undefined}
-        onAvatarClick={() =>
-          selectImage({
-            onPositive: async (imageUrl) => {
-              const result = await changeIcon({ variables: { imageUrl, id } });
-              const error = result.data?.changeServerIcon.error ?? null;
-              if (error) {
-                Alert.alert(error.code, `${error.message} | ${imageUrl}`);
-              }
-              await refetch({ id });
-            },
+        onAvatarClick={async () => {
+          const imageUrl = await selectImage({
             title: "Server Icon",
             subtitle: server.name,
-          })
-        }
+          });
+          if (imageUrl) {
+            const result = await changeIcon({ variables: { imageUrl, id } });
+            const error = result.data?.changeServerIcon.error ?? null;
+            if (error) {
+              Alert.alert(error.code, `${error.message} | ${imageUrl}`);
+            }
+            await refetch({ id });
+          }
+        }}
       />
       <Widget title="This server's emotes">
         <AvatarScroller

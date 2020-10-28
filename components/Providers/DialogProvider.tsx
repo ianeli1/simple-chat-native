@@ -5,10 +5,8 @@ import { TextInput, TextInputProps } from "../TextInput";
 
 interface DialogContext {
   selectImage(
-    props: Omit<ImageDialogProps, "visible" | "onDismiss"> & {
-      onDismiss?: () => void;
-    }
-  ): void;
+    props: Omit<ImageDialogProps, "visible" | "onDismiss" | "onPositive">
+  ): Promise<string | null>;
   inputText(
     props: Omit<TextInputProps, "visible" | "onDismiss" | "onPositive">
   ): Promise<string[] | null>;
@@ -23,14 +21,23 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const [imageDialogProps, setImageDialogProps] = useState<ImageDialogProps>();
   const [textInputProps, setTextInputProps] = useState<TextInputProps>();
 
-  const selectImage: DialogContext["selectImage"] = function (props) {
-    setImageDialogProps({
-      ...props,
-      onDismiss: () => {
-        props.onDismiss && props.onDismiss();
-        setImageDialogProps((p) => p && { ...p, visible: false });
-      },
-      visible: true,
+  const selectImage: DialogContext["selectImage"] = async function (props) {
+    function hide() {
+      setImageDialogProps((p) => p && { ...p, visible: false });
+    }
+    return await new Promise((resolve) => {
+      setImageDialogProps({
+        ...props,
+        onDismiss: () => {
+          hide();
+          resolve(null);
+        },
+        onPositive: (imageUrl) => {
+          hide();
+          resolve(imageUrl);
+        },
+        visible: true,
+      });
     });
   };
 

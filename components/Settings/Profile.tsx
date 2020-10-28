@@ -40,21 +40,21 @@ export function Profile() {
         title={user!.name}
         subtitle={user!.id}
         icon={user?.icon ?? undefined}
-        onAvatarClick={() =>
-          selectImage({
-            onPositive: async (imageUrl) => {
-              const result = await changeAvatar({ variables: { imageUrl } });
-              const error = result.data?.changeAvatar.error ?? null;
-              if (error) {
-                Alert.alert(error.code, `${error.message} | ${imageUrl}`);
-              }
-              await refetch();
-            },
+        onAvatarClick={async () => {
+          const imageUrl = await selectImage({
             title: "Avatar",
             subtitle: user?.name ?? "Unk",
             uri: user?.icon ?? undefined,
-          })
-        }
+          });
+          if (imageUrl) {
+            const result = await changeAvatar({ variables: { imageUrl } });
+            const error = result.data?.changeAvatar.error ?? null;
+            if (error) {
+              Alert.alert(error.code, `${error.message} | ${imageUrl}`);
+            }
+            await refetch();
+          }
+        }}
       />
       <Widget
         title="Your servers"
