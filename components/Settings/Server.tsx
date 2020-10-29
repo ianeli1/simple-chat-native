@@ -5,7 +5,11 @@ import { ScrollView, StyleSheet, Alert } from "react-native";
 import { Button } from "react-native-paper";
 import {
   useChangeServerIconMutation,
+  useCreateChannelMutation,
+  useCreateEmoteMutation,
+  useCreateInviteMutation,
   useGetServerQuery,
+  useRemoveInviteMutation,
 } from "../../generated/graphql";
 import { StackList } from "../../screens/Settings";
 import { AvatarNameCombo } from "../AvatarNameCombo";
@@ -22,12 +26,17 @@ export default function Server({
   navigation: StackNavigationProp<StackList, "Server">;
   route: RouteProp<StackList, "Server">;
 }) {
+  const id = route.params.serverId;
   const { data, refetch, loading } = useGetServerQuery({
     skip: !route.params.serverId,
+    variables: { id },
   });
-  const { selectImage } = useContext(dialogContext);
+  const { selectImage, inputText } = useContext(dialogContext);
   const [changeIcon] = useChangeServerIconMutation();
-  const id = route.params.serverId;
+  const [addEmote] = useCreateEmoteMutation();
+  const [createInvite] = useCreateInviteMutation();
+  const [removeInvite] = useRemoveInviteMutation();
+  const [createChannel] = useCreateChannelMutation();
   const server = data?.server.server ?? null;
 
   useEffect(() => {
@@ -43,6 +52,48 @@ export default function Server({
       })) ?? [],
     [id]
   );
+
+  async function onEmoteAdd() {
+    const imageUrl = await selectImage({
+      title: "Emote",
+      subtitle: "Select your image",
+    });
+    if (imageUrl) {
+      const name = ((await inputText({
+        title: "Name of the emote",
+        fields: ["Name"],
+      })) ?? [Date.now().toString()])[0];
+      const req = await addEmote({ variables: { id, imageUrl, name } });
+      if (req.data?.createEmote.error) {
+        Alert.alert("Error", req.data.createEmote.error.message);
+      } else {
+        await refetch({ id });
+      }
+    }
+  }
+
+  async function onInviteAdd() {
+    await createInvite({ variables: { id } });
+    await refetch({ id });
+  }
+
+  async function onInviteRemove(id: number) {
+    await removeInvite({ variables: { id } });
+    await refetch();
+  }
+
+  async function onChannelAdd() {
+    const text = await inputText({ title: "Channel name", fields: ["Name"] });
+    if (text) {
+      const req = await createChannel({ variables: { id, name: text[0] } });
+      if (req.data?.createChannel.error) {
+        Alert.alert("Error", req.data.createChannel.error.message);
+      } else {
+        await refetch();
+      }
+    }
+  }
+
   //TODO: Query only this server
   //TODO: add kick member mutation
   //TODO: handle edge case of server not existing
@@ -72,13 +123,19 @@ export default function Server({
           }
         }}
       />
-      <Widget title="This server's emotes">
+      <Widget
+        title="This server's emotes"
+        action={{ icon: "plus", onPress: onEmoteAdd }}
+      >
         <AvatarScroller
           elements={emotes}
           placeholder="Looks like this server doesn't have any emotes yet..."
         />
       </Widget>
-      <Widget title="This server's channels">
+      <Widget
+        title="This server's channels"
+        action={{ icon: "plus", onPress: onChannelAdd }}
+      >
         <RectangleScroller
           elements={server!.channels.map(({ id, name }) => ({
             key: id,
@@ -99,12 +156,16 @@ export default function Server({
         />
       </Widget>
 
-      <Widget title="This server's invites">
+      <Widget
+        title="This server's invites"
+        action={{ icon: "plus", onPress: onInviteAdd }}
+      >
         <RectangleScroller
           elements={server!.invites.map(({ id, expire }) => ({
             key: id,
             name: `${id}: Expires on ${expire ?? "NEVER!"}`,
           }))}
+          onNegative={onInviteRemove}
         />
       </Widget>
 
