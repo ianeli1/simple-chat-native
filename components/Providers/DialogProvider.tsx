@@ -4,9 +4,20 @@ import { ImageDialog, ImageDialogProps } from "../ImageDialog";
 import { TextInput, TextInputProps } from "../TextInput";
 
 interface DialogContext {
+  /**
+   * Displays a dialog with the option to select an image from the user's gallery
+   * @param props Title and subtitle of the dialog
+   * @returns Firebase URL of the selected image
+   */
   selectImage(
     props: Omit<ImageDialogProps, "visible" | "onDismiss" | "onPositive">
   ): Promise<string | null>;
+
+  /**
+   * Displays a dialog with the option of inputting text
+   * @param props Title and names of the text fields of the dialog
+   * @returns The array of strings in the same order as the fields prop
+   */
   inputText(
     props: Omit<TextInputProps, "visible" | "onDismiss" | "onPositive">
   ): Promise<string[] | null>;
