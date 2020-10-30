@@ -30,7 +30,7 @@ export function NewMessageBox() {
         <IconButton
           icon="send"
           style={[
-            styles.sendBtn,
+            styles.imageBtn,
             { backgroundColor: text.length > 0 ? "#5f9ea0" : "#000" },
           ]}
           disabled={loading}
@@ -56,17 +56,20 @@ const styles = StyleSheet.create({
   container: {
     display: "flex",
     width: "100%",
+    maxHeight: "50%",
+    padding: 4,
   },
   root: {
     flexShrink: 0,
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    margin: 8,
-    marginTop: 0,
+    margin: 4,
+    marginTop: -8,
   },
   imageBtn: {
     backgroundColor: "#000",
+    marginTop: 12,
   },
   textInput: {
     flexGrow: 1,

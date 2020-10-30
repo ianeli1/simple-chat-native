@@ -44,15 +44,12 @@ const styles = StyleSheet.create({
     flex: 1,
     display: "flex",
   },
-  background: {
-    position: "absolute",
-  },
   test: {
     paddingTop: StatusBar.currentHeight,
     backgroundColor: "#222",
     flexGrow: 1,
     display: "flex",
-    paddingBottom: 128,
+    maxHeight: "100%",
   },
   chatbox: {
     flexGrow: 1,

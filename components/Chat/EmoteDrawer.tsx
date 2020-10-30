@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   root: {
     display: "flex",
     width: "100%",
-    height: "50%",
+    height: "100%",
     backgroundColor: "#000",
     borderRadius: 8,
   },
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     width: "100%",
-    height: "100%",
+    flexGrow: 1,
     padding: 8,
   },
   emote: {
