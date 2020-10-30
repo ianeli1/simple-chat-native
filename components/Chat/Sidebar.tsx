@@ -8,8 +8,11 @@ import { channelContext } from "../Providers/ChannelProvider";
 import { serverContext } from "../Providers/ServerProvider";
 import { userContext } from "../Providers/UserProvider";
 import { RectangleScroller } from "../RectangleScroller";
+interface SidebarProps {
+  onServerNamePress: (serverId: number) => void;
+}
 
-export function Sidebar() {
+export function Sidebar(props: SidebarProps) {
   const { user } = useContext(userContext);
   const { currentServer, setCurrentServer, server } = useContext(serverContext);
   const { setCurrentChannel, currentChannel } = useContext(channelContext);
@@ -37,7 +40,12 @@ export function Sidebar() {
         />
       </ScrollView>
       <ScrollView>
-        <TouchableRipple style={styles.titleBtn} onPress={() => null}>
+        <TouchableRipple
+          style={styles.titleBtn}
+          onPress={() =>
+            currentServer && props.onServerNamePress(currentServer)
+          }
+        >
           <View style={styles.title}>
             <Title style={{ flexShrink: 1, flexGrow: 1, lineHeight: 20 }}>
               {server?.name ?? "Unk"}
@@ -53,7 +61,7 @@ export function Sidebar() {
         <RectangleScroller
           elements={channels}
           onPress={(key) => {
-            setCurrentChannel(key);
+            key != currentChannel && setCurrentChannel(key);
             console.log("clicked on channel", key);
           }}
         />

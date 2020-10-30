@@ -1,3 +1,4 @@
+import { StackNavigationProp } from "@react-navigation/stack";
 import React from "react";
 import { View, StyleSheet, StatusBar } from "react-native";
 import DrawerLayout from "react-native-gesture-handler/DrawerLayout";
@@ -6,8 +7,13 @@ import { NewMessageBox } from "../components/Chat/NewMessageBox";
 import { Sidebar } from "../components/Chat/Sidebar";
 import { TopBar } from "../components/Chat/TopBar";
 import { ChannelProvider } from "../components/Providers/ChannelProvider";
+import { BottomTabParamList } from "../types";
 
-export function Chat() {
+export function Chat({
+  navigation,
+}: {
+  navigation: StackNavigationProp<BottomTabParamList, "Chat">;
+}) {
   const drawerProps = {
     drawerWidth: 300,
     drawerType: "slide" as const,
@@ -21,7 +27,21 @@ export function Chat() {
         <DrawerLayout
           {...drawerProps}
           drawerPosition="left"
-          renderNavigationView={() => <Sidebar />}
+          renderNavigationView={() => (
+            <Sidebar
+              onServerNamePress={(key) =>
+                //@ts-ignore
+                navigation.navigate("Settings", {
+                  screen: "Server",
+                  params: {
+                    serverId: key,
+                    headerLeft: undefined,
+                  },
+                  transition: "vertical",
+                })
+              }
+            />
+          )}
           ref={(d) => {
             drawer = d;
           }}

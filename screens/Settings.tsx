@@ -18,7 +18,7 @@ export function Settings() {
       <Stack.Screen
         name="Home"
         component={Home}
-        options={{ title: "Settings" }}
+        options={{ title: "Settings", headerLeft: undefined }}
       />
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="Server" component={Server} />

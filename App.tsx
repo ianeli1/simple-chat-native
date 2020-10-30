@@ -19,6 +19,7 @@ import { WebSocketLink } from "apollo-link-ws";
 import { graphQlServer } from "./secretKey";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { DialogProvider } from "./components/Providers/DialogProvider";
+import ServerProvider from "./components/Providers/ServerProvider";
 
 const wsLink = new WebSocketLink({
   uri: graphQlServer.ws,
@@ -68,9 +69,11 @@ export default function App() {
         <SafeAreaProvider>
           <PaperProvider theme={theme}>
             <UserProvider>
-              <DialogProvider>
-                <Navigation colorScheme={colorScheme} />
-              </DialogProvider>
+              <ServerProvider>
+                <DialogProvider>
+                  <Navigation colorScheme={colorScheme} />
+                </DialogProvider>
+              </ServerProvider>
             </UserProvider>
             <StatusBar />
           </PaperProvider>

@@ -30,11 +30,7 @@ export default function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="Chat"
-        children={() => (
-          <ServerProvider>
-            <Chat />
-          </ServerProvider>
-        )}
+        children={(props) => <Chat {...props} />}
         options={{
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="message" color={color} />

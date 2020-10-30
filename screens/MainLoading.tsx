@@ -1,5 +1,5 @@
 import { StackNavigationProp } from "@react-navigation/stack";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { userContext } from "../components/Providers/UserProvider";
@@ -11,13 +11,16 @@ export function MainLoading({
   navigation: StackNavigationProp<RootStackParamList, "Loading">;
 }) {
   const { user, loading } = useContext(userContext);
-  if (!loading) {
-    if (user) {
-      navigation.navigate("Root");
-    } else {
-      navigation.navigate("Login");
+
+  useEffect(() => {
+    if (!loading || user) {
+      if (user) {
+        navigation.navigate("Root");
+      } else {
+        navigation.navigate("Login");
+      }
     }
-  }
+  });
   return (
     <View style={styles.root}>
       <View style={{ alignItems: "center" }}>
