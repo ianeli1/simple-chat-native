@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { AvatarNameCombo } from "./AvatarNameCombo";
 import { Dialog } from "./Dialog";
@@ -8,6 +8,7 @@ import {
   useUserQuery,
 } from "../generated/graphql";
 import { Button } from "react-native-paper";
+import { userContext } from "./Providers/UserProvider";
 
 export interface UserDialogProps {
   visible: boolean;
@@ -21,6 +22,7 @@ export function UserDialog(props: UserDialogProps) {
     skip: !id,
     variables: { id },
   });
+  const { user } = useContext(userContext);
   const [sendFriendReq] = useSendFriendRequestMutation();
 
   useEffect(() => {
@@ -43,14 +45,17 @@ export function UserDialog(props: UserDialogProps) {
           <Widget title="User's profile">
             <View style={styles.root}>
               <View>
-                <Text>birthday: {data?.user.user?.birthday}</Text>
+                <Text style={styles.details}>
+                  birthday: {data?.user.user?.birthday}
+                </Text>
               </View>
               <View>
                 <Button
                   onPress={() => sendFriendReq({ variables: { id } })}
                   disabled={
                     (data?.user.user?.isFriend ||
-                      data?.user.user?.sentFriendRequest) ??
+                      data?.user.user?.sentFriendRequest ||
+                      user?.id === id) ??
                     true
                   }
                 >
@@ -71,5 +76,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     minHeight: 40,
     justifyContent: "space-around",
+  },
+  details: {
+    color: "#FFF",
   },
 });
