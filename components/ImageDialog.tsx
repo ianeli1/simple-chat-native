@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Alert, StyleSheet, Platform, View } from "react-native";
-import { Portal, Modal, Button } from "react-native-paper";
+import { Button } from "react-native-paper";
 import { AvatarNameCombo } from "./AvatarNameCombo";
 import { Widget } from "./Widget";
 import {
@@ -9,6 +9,7 @@ import {
   MediaTypeOptions,
 } from "expo-image-picker";
 import { uploadImage } from "../firebaseFunctions";
+import { Dialog } from "./Dialog";
 
 export interface ImageDialogProps {
   visible: boolean;
@@ -60,51 +61,40 @@ export function ImageDialog(props: ImageDialogProps) {
   async function processImage() {
     if (uri) {
       setLoading(0.1);
-      props.onPositive(await uploadImage(uri, setLoading));
+      props.onPositive(
+        await uploadImage(uri, (per) => setLoading((v) => per || v))
+      );
       setUri(undefined);
       props.onDismiss();
     }
   }
 
   return (
-    <Portal>
-      <Modal
-        visible={props.visible}
-        onDismiss={props.onDismiss}
-        contentContainerStyle={styles.root}
-      >
-        <Widget title={props.title}>
-          <AvatarNameCombo
-            title={props.subtitle}
-            icon={uri || props.uri}
-            onAvatarClick={pickImage}
-          />
-          <View style={styles.actions}>
-            <Button
-              onPress={processImage}
-              disabled={!!loading || !uri}
-              mode="contained"
-            >
-              Ok
-            </Button>
-            <Button onPress={props.onDismiss} mode="text">
-              Cancel
-            </Button>
-          </View>
-        </Widget>
-      </Modal>
-    </Portal>
+    <Dialog visible={props.visible} onDismiss={props.onDismiss}>
+      <Widget title={props.title}>
+        <AvatarNameCombo
+          title={props.subtitle}
+          icon={uri || props.uri}
+          onAvatarClick={pickImage}
+        />
+        <View style={styles.actions}>
+          <Button
+            onPress={processImage}
+            disabled={!!loading || !uri}
+            mode="contained"
+          >
+            Ok
+          </Button>
+          <Button onPress={props.onDismiss} mode="text">
+            Cancel
+          </Button>
+        </View>
+      </Widget>
+    </Dialog>
   );
 }
 
 const styles = StyleSheet.create({
-  root: {
-    display: "flex",
-    backgroundColor: "#000",
-    borderColor: "#5f9ea0",
-    borderWidth: 1,
-    borderStyle: "solid",
-  },
   actions: {
     display: "flex",
     width: "100%",

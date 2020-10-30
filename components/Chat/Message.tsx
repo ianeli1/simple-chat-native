@@ -1,8 +1,9 @@
-import React, { useMemo } from "react";
+import React, { useContext, useMemo } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { Avatar } from "../Avatar";
 import { GetChannelQuery } from "../../generated/graphql";
+import { dialogContext } from "../Providers/DialogProvider";
 
 interface MessageProps {
   message: NonNullable<GetChannelQuery["channel"]["channel"]>["messages"][0];
@@ -17,10 +18,16 @@ interface MessageProps {
 export function Message(props: MessageProps) {
   const { message } = props;
   const { author } = message;
+  const { showUserProfile } = useContext(dialogContext);
   return useMemo(
     () => (
       <View style={styles.root}>
-        <Avatar label={author.name} icon={author.icon ?? undefined} size={48} />
+        <Avatar
+          label={author.name}
+          icon={author.icon ?? undefined}
+          size={48}
+          onPress={() => showUserProfile({ userId: props.message.author.id })}
+        />
         <TouchableHighlight
           containerStyle={styles.root}
           style={styles.message}
