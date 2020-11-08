@@ -1,18 +1,20 @@
 import React, { useContext, useState } from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
-import { IconButton, TextInput } from "react-native-paper";
+import { ActivityIndicator, IconButton, TextInput } from "react-native-paper";
 import { channelContext } from "../Providers/ChannelProvider";
 import { useSendMessageMutation } from "../../generated/graphql";
 import { Emote, EmoteDrawer } from "./EmoteDrawer";
 import { dialogContext } from "../Providers/DialogProvider";
+import { launchImageLibraryAsync, MediaTypeOptions } from "expo-image-picker";
+import { uploadImage } from "../../firebaseFunctions";
 
 export function NewMessageBox() {
   const [text, setText] = useState("");
+  const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
   const [showEmotes, setShowEmotes] = useState(false);
   const { currentChannel } = useContext(channelContext);
-  const [sendMessage, { loading }] = useSendMessageMutation();
-  const { selectImage } = useContext(dialogContext);
+  const [sendMessage] = useSendMessageMutation();
 
   /**Returns an array with the id of the emotes used */
   function getEmotes() {
@@ -26,24 +28,39 @@ export function NewMessageBox() {
     return [...emotes];
   }
 
+  async function pickImage() {
+    const result = await launchImageLibraryAsync({
+      mediaTypes: MediaTypeOptions.Images,
+      allowsMultipleSelection: false,
+      quality: 0.8,
+    });
+
+    if (!result.cancelled) {
+      setImageUrl(result.uri);
+    }
+  }
+
+  async function processImage() {
+    setLoading(true);
+    if (imageUrl) {
+      return await uploadImage(imageUrl);
+    } else {
+      return undefined;
+    }
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.root}>
-        {imageUrl ? (
+        {loading ? (
+          <ActivityIndicator color="#5f9ea0" />
+        ) : imageUrl ? (
           <Emote uri={imageUrl} onPress={() => setImageUrl(undefined)} />
         ) : (
           <IconButton
             icon="image"
             style={styles.imageBtn}
-            onPress={async () => {
-              const imageUrl = await selectImage({
-                title: "Pick an image",
-                subtitle: ":)",
-              });
-              if (imageUrl) {
-                setImageUrl(imageUrl);
-              }
-            }}
+            onPress={pickImage}
           />
         )}
 
@@ -68,16 +85,20 @@ export function NewMessageBox() {
           ]}
           disabled={loading}
           onPress={async () => {
-            if (text && currentChannel) {
+            if ((text || imageUrl) && currentChannel) {
+              const oldText = text;
+              setText("");
               await sendMessage({
                 variables: {
-                  content: text,
+                  content: oldText,
                   id: currentChannel!,
                   emotes: getEmotes(),
-                  image: imageUrl,
+                  image: await processImage(),
                 },
               });
-              setText("");
+
+              setLoading(false);
+              setImageUrl(undefined);
               console.log("clean");
             }
           }}
