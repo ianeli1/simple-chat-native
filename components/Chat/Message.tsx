@@ -1,5 +1,5 @@
 import React, { useContext, useMemo } from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, Image } from "react-native";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { Avatar } from "../Avatar";
 import { GetChannelQuery } from "../../generated/graphql";
@@ -64,7 +64,14 @@ export function Message(props: MessageProps) {
         >
           <View style={styles.inner}>
             <Text style={styles.author}>{author.name}</Text>
-            <View style={styles.content}>{splitString(message.content)}</View>
+            <View style={styles.content}>
+              {splitString(message.content)}
+              {message.image && (
+                <Image
+                  source={{ uri: message.image, width: 100, height: 100 }}
+                />
+              )}
+            </View>
           </View>
         </TouchableHighlight>
       </View>

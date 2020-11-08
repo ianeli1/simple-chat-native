@@ -1,16 +1,18 @@
 import React, { useContext, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 import { IconButton, TextInput } from "react-native-paper";
 import { channelContext } from "../Providers/ChannelProvider";
 import { useSendMessageMutation } from "../../generated/graphql";
-import { EmoteDrawer } from "./EmoteDrawer";
+import { Emote, EmoteDrawer } from "./EmoteDrawer";
+import { dialogContext } from "../Providers/DialogProvider";
 
 export function NewMessageBox() {
   const [text, setText] = useState("");
-  const [emotes, setEmotes] = useState<number[]>([]);
+  const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
   const [showEmotes, setShowEmotes] = useState(false);
   const { currentChannel } = useContext(channelContext);
   const [sendMessage, { loading }] = useSendMessageMutation();
+  const { selectImage } = useContext(dialogContext);
 
   /**Returns an array with the id of the emotes used */
   function getEmotes() {
@@ -27,7 +29,24 @@ export function NewMessageBox() {
   return (
     <View style={styles.container}>
       <View style={styles.root}>
-        <IconButton icon="image" style={styles.imageBtn} />
+        {imageUrl ? (
+          <Emote uri={imageUrl} onPress={() => setImageUrl(undefined)} />
+        ) : (
+          <IconButton
+            icon="image"
+            style={styles.imageBtn}
+            onPress={async () => {
+              const imageUrl = await selectImage({
+                title: "Pick an image",
+                subtitle: ":)",
+              });
+              if (imageUrl) {
+                setImageUrl(imageUrl);
+              }
+            }}
+          />
+        )}
+
         <IconButton
           icon="emoticon"
           style={styles.imageBtn}
@@ -55,6 +74,7 @@ export function NewMessageBox() {
                   content: text,
                   id: currentChannel!,
                   emotes: getEmotes(),
+                  image: imageUrl,
                 },
               });
               setText("");
