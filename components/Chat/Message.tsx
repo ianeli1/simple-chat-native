@@ -4,11 +4,16 @@ import { TouchableHighlight } from "react-native-gesture-handler";
 import { Avatar } from "../Avatar";
 import { GetChannelQuery } from "../../generated/graphql";
 import { dialogContext } from "../Providers/DialogProvider";
+import { Emote } from "./EmoteDrawer";
 
 interface MessageProps {
   message: NonNullable<GetChannelQuery["channel"]["channel"]>["messages"][0];
   onLongPress?: () => void;
   onPress?: () => void;
+}
+
+function CoolText({ children }: { children: string }) {
+  return <Text style={styles.textContent}>{children}</Text>;
 }
 
 /**
@@ -19,6 +24,29 @@ export function Message(props: MessageProps) {
   const { message } = props;
   const { author } = message;
   const { showUserProfile } = useContext(dialogContext);
+
+  function splitString(content: string) {
+    const emoteRegex = /:[a-zA-Z0-9]+<(.*?)>:/g;
+    const output: JSX.Element[] = [];
+    let k: ReturnType<typeof emoteRegex.exec>;
+    let lastIndex = 0;
+    while ((k = emoteRegex.exec(content))) {
+      output.push(
+        <CoolText key={lastIndex + "t"}>
+          {content.slice(lastIndex, k.index)}
+        </CoolText>
+      );
+      const uri =
+        message.emotes?.find(({ id }) => id === +k![1])?.image ?? null;
+      uri && output.push(<Emote key={lastIndex + "e"} uri={uri} />);
+      lastIndex += k.index + k[0].length;
+    }
+    return [
+      ...output,
+      <CoolText key={lastIndex + "tt"}>{content.slice(lastIndex)}</CoolText>,
+    ];
+  }
+
   return useMemo(
     () => (
       <View style={styles.root}>
@@ -26,7 +54,7 @@ export function Message(props: MessageProps) {
           label={author.name}
           icon={author.icon ?? undefined}
           size={48}
-          onPress={() => showUserProfile({ userId: props.message.author.id })}
+          onPress={() => showUserProfile({ userId: author.id })}
         />
         <TouchableHighlight
           containerStyle={styles.root}
@@ -36,9 +64,7 @@ export function Message(props: MessageProps) {
         >
           <View style={styles.inner}>
             <Text style={styles.author}>{author.name}</Text>
-            <View style={styles.content}>
-              <Text style={styles.textContent}>{message.content}</Text>
-            </View>
+            <View style={styles.content}>{splitString(message.content)}</View>
           </View>
         </TouchableHighlight>
       </View>
@@ -72,6 +98,9 @@ const styles = StyleSheet.create({
   },
   content: {
     display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    paddingRight: 5,
   },
   author: {
     fontSize: 25,

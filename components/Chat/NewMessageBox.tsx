@@ -7,9 +7,23 @@ import { EmoteDrawer } from "./EmoteDrawer";
 
 export function NewMessageBox() {
   const [text, setText] = useState("");
+  const [emotes, setEmotes] = useState<number[]>([]);
   const [showEmotes, setShowEmotes] = useState(false);
   const { currentChannel } = useContext(channelContext);
   const [sendMessage, { loading }] = useSendMessageMutation();
+
+  /**Returns an array with the id of the emotes used */
+  function getEmotes() {
+    //TODO: add error handling
+    const emoteRegex = /:[a-zA-Z0-9]+<(.*?)>:/g; // :emoteName<id>:
+    let k: ReturnType<typeof emoteRegex.exec>;
+    const emotes = new Set<number>();
+    while ((k = emoteRegex.exec(text))) {
+      emotes.add(parseInt(k[1]));
+    }
+    return [...emotes];
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.root}>
@@ -37,7 +51,11 @@ export function NewMessageBox() {
           onPress={async () => {
             if (text && currentChannel) {
               await sendMessage({
-                variables: { content: text, id: currentChannel! },
+                variables: {
+                  content: text,
+                  id: currentChannel!,
+                  emotes: getEmotes(),
+                },
               });
               setText("");
               console.log("clean");
@@ -46,7 +64,15 @@ export function NewMessageBox() {
         />
       </View>
       {showEmotes && (
-        <EmoteDrawer onEmoteClick={(name) => setText((t) => t + name)} />
+        <EmoteDrawer
+          onEmoteClick={({ name, id }) =>
+            void setText(
+              (t) =>
+                t.length > 0 ? `${t} :${name}<${id}>:` : `:${name}<${id}>:`
+              //TODO: align the emotes and stop the empty space from being added at the beginnnigng gignignigngi
+            )
+          }
+        />
       )}
     </View>
   );
@@ -66,6 +92,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     margin: 4,
     marginTop: -8,
+    maxWidth: "100%",
   },
   imageBtn: {
     backgroundColor: "#000",
@@ -73,6 +100,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     flexGrow: 1,
+    flexShrink: 1,
   },
   sendBtn: {},
 });

@@ -123,6 +123,9 @@ export type Message = {
 
 export type MessageData = {
   content: Scalars['String'];
+  emotes?: Maybe<Array<Scalars['Int']>>;
+  image?: Maybe<Scalars['String']>;
+  invite?: Maybe<Scalars['Int']>;
 };
 
 export type Mutation = {
@@ -451,6 +454,9 @@ export type RemoveChannelMutation = (
 export type SendMessageMutationVariables = Exact<{
   id: Scalars['Float'];
   content: Scalars['String'];
+  emotes?: Maybe<Array<Scalars['Int']>>;
+  invite?: Maybe<Scalars['Int']>;
+  image?: Maybe<Scalars['String']>;
 }>;
 
 
@@ -1021,8 +1027,8 @@ export type RemoveChannelMutationHookResult = ReturnType<typeof useRemoveChannel
 export type RemoveChannelMutationResult = Apollo.MutationResult<RemoveChannelMutation>;
 export type RemoveChannelMutationOptions = Apollo.BaseMutationOptions<RemoveChannelMutation, RemoveChannelMutationVariables>;
 export const SendMessageDocument = gql`
-    mutation SendMessage($id: Float!, $content: String!) {
-  createMessage(channelId: $id, message: {content: $content}) {
+    mutation SendMessage($id: Float!, $content: String!, $emotes: [Int!], $invite: Int, $image: String) {
+  createMessage(channelId: $id, message: {content: $content, emotes: $emotes, invite: $invite, image: $image}) {
     ok
     error {
       code
@@ -1048,6 +1054,9 @@ export type SendMessageMutationFn = Apollo.MutationFunction<SendMessageMutation,
  *   variables: {
  *      id: // value for 'id'
  *      content: // value for 'content'
+ *      emotes: // value for 'emotes'
+ *      invite: // value for 'invite'
+ *      image: // value for 'image'
  *   },
  * });
  */

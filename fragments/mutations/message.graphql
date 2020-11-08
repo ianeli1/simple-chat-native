@@ -1,5 +1,19 @@
-mutation SendMessage($id: Float!, $content: String!) {
-  createMessage(channelId: $id, message: { content: $content }) {
+mutation SendMessage(
+  $id: Float!
+  $content: String!
+  $emotes: [Int!]
+  $invite: Int
+  $image: String
+) {
+  createMessage(
+    channelId: $id
+    message: {
+      content: $content
+      emotes: $emotes
+      invite: $invite
+      image: $image
+    }
+  ) {
     ok
     error {
       code

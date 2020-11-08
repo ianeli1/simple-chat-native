@@ -2,9 +2,9 @@ import React, { useMemo } from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 import { ScrollView, TouchableHighlight } from "react-native-gesture-handler";
 import { IconButton } from "react-native-paper";
-import { useMyEmotesQuery } from "../../generated/graphql";
+import { EmoteObject, useMyEmotesQuery } from "../../generated/graphql";
 
-function Emote(props: { uri: string; onPress: () => void }) {
+export function Emote(props: { uri: string; onPress?: () => void }) {
   return useMemo(
     () => (
       <TouchableHighlight style={styles.emote} onPress={props.onPress}>
@@ -16,7 +16,7 @@ function Emote(props: { uri: string; onPress: () => void }) {
 }
 
 interface EmoteDrawerProps {
-  onEmoteClick: (name: string, id: number) => void;
+  onEmoteClick: (emote: Pick<EmoteObject, "id" | "image" | "name">) => void;
 }
 
 export function EmoteDrawer(props: EmoteDrawerProps) {
@@ -29,7 +29,7 @@ export function EmoteDrawer(props: EmoteDrawerProps) {
         <Emote
           key={id}
           uri={image}
-          onPress={() => props.onEmoteClick(name, id)}
+          onPress={() => props.onEmoteClick({ id, image, name })}
         />
       )),
     [emotes?.length]
