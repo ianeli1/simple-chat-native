@@ -3,6 +3,7 @@ import React, { useContext, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { userContext } from "../components/Providers/UserProvider";
+import { checkAuth } from "../firebaseFunctions";
 import { RootStackParamList } from "../types";
 
 export function MainLoading({
@@ -10,17 +11,18 @@ export function MainLoading({
 }: {
   navigation: StackNavigationProp<RootStackParamList, "Loading">;
 }) {
-  const { user, loading } = useContext(userContext);
+  const { user, loading, refetch } = useContext(userContext);
 
   useEffect(() => {
-    if (!loading || user) {
-      if (user) {
+    checkAuth().then(async (loggedIn) => {
+      if (loggedIn && (await refetch())) {
         navigation.navigate("Root");
       } else {
         navigation.navigate("Login");
       }
-    }
+    });
   });
+
   return (
     <View style={styles.root}>
       <View style={{ alignItems: "center" }}>

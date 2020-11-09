@@ -6,6 +6,16 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const storage = firebase.storage();
 
+export async function checkAuth() {
+  return await new Promise<boolean>((resolve) => {
+    auth.onAuthStateChanged((a) => {
+      if (a?.uid) {
+        resolve(true);
+      } else resolve(false);
+    });
+  });
+}
+
 /**
  *
  * @param email The user's email
