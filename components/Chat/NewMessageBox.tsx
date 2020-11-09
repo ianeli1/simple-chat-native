@@ -10,7 +10,7 @@ import { uploadImage } from "../../firebaseFunctions";
 
 export function NewMessageBox() {
   const [text, setText] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(0);
   const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
   const [showEmotes, setShowEmotes] = useState(false);
   const { currentChannel } = useContext(channelContext);
@@ -32,7 +32,6 @@ export function NewMessageBox() {
     const result = await launchImageLibraryAsync({
       mediaTypes: MediaTypeOptions.Images,
       allowsMultipleSelection: false,
-      quality: 0.8,
     });
 
     if (!result.cancelled) {
@@ -41,9 +40,11 @@ export function NewMessageBox() {
   }
 
   async function processImage() {
-    setLoading(true);
+    setLoading(1);
     if (imageUrl) {
-      return await uploadImage(imageUrl);
+      return await uploadImage(imageUrl, (per) =>
+        setLoading(Math.floor(per) || 1)
+      );
     } else {
       return undefined;
     }
@@ -75,7 +76,7 @@ export function NewMessageBox() {
           style={styles.textInput}
           mode="outlined"
           dense
-          placeholder="Send a new message..."
+          placeholder={loading ? `${loading}%...` : "Send a new message..."}
         />
         <IconButton
           icon="send"
@@ -83,7 +84,7 @@ export function NewMessageBox() {
             styles.imageBtn,
             { backgroundColor: text.length > 0 ? "#5f9ea0" : "#000" },
           ]}
-          disabled={loading}
+          disabled={!!loading}
           onPress={async () => {
             if ((text || imageUrl) && currentChannel) {
               const oldText = text;
@@ -97,7 +98,7 @@ export function NewMessageBox() {
                 },
               });
 
-              setLoading(false);
+              setLoading(0);
               setImageUrl(undefined);
               console.log("clean");
             }
